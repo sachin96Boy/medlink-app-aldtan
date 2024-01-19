@@ -1,0 +1,24 @@
+.firstPage{
+    background-image: url('../../assets/img/first-page.jpg');
+}
+.registerPage{
+    background-color: #4b9e9e;
+}
+.loginPage{
+    background-color: #4b9e9e;
+}
+.loginform{
+    background-color: white;
+    
+}
+.registerform{
+    background-color: white;
+}
+.mainSideBar{
+    background-color: azure;
+}
+
+.sm:flex-1 .sm:flex .sm:items-center .sm:justify-between
+{
+display: none !important;
+}

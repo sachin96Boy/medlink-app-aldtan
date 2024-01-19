@@ -1,0 +1,153 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Models\MedicalTest;
+
+class MedicalTestController extends Controller
+{
+     /**
+    * Create a new controller instance.
+    *
+    * @return void
+    */
+   public function __construct()
+   {
+       $this->middleware('auth');
+   }
+
+   /**
+    * Show the application dashboard.
+    *
+    * @return \Illuminate\Contracts\Support\Renderable
+    */
+    public function view()
+    {
+        return view('medicalTestAdd');
+
+    }
+
+
+    public function add(Request $request)
+    {
+		$data=[
+                    'test_name' => $request->test_name
+                ];
+                MedicalTest::create($data);
+                
+                 session()->flash('message', 'Successfully Added Medical Test !');
+
+                try {
+                    return redirect()->back()->with('success', 'Successfully Added Medical Test !');
+
+                } catch (Exception $e) {
+
+                    return redirect()->back()->with('error', 'Medical Test Inserting Error ..!');
+                }
+}
+
+    public function  medical_test_list()
+    {
+        $medical_test_list =  DB::table('medical_tests')
+        ->select('medical_tests.*')
+        ->where('medical_tests.status' , '=', "0")
+        ->get();
+
+        $medical_test_list_deleted =  DB::table('medical_tests')
+        ->select('medical_tests.*')
+        ->where('medical_tests.status' , '=', "1")
+        ->get();
+
+        return view('medicalTestList',['medical_test_list' => $medical_test_list , 'medical_test_list_deleted' => $medical_test_list_deleted]);
+    }
+
+    public function delete(Request $request){
+        $medical_test = medicaltest::find($request->id);
+        $medical_test->status='1';
+        
+          session()->flash('message', 'Successfully Deleted Medical Test  !');
+
+        try {
+            $medical_test->save();
+            return redirect()->back()->with('success', 'Successfully Deleted Medical Test !');
+
+        } catch (Exception $e) {
+
+            return redirect()->back()->with('error', 'medical_test Deleted Error ..!');
+        }
+    }
+
+    public function active(Request $request){
+        $medical_test = medicaltest::find($request->id);
+        $medical_test->status='0';
+        
+         session()->flash('message', 'Successfully Actived Medical Test  !');
+
+        try {
+            $medical_test->save();
+            return redirect()->back()->with('success', 'Successfully Actived Medical Test !');
+
+        } catch (Exception $e) {
+
+            return redirect()->back()->with('error', 'medical_test Active Error ..!');
+        }
+    }
+
+    public function medical_test_search(Request $request)
+    {
+        $medical_test_list = DB::table('medical_tests');
+
+        if (isset($request->test_name)) {
+            $test_name = $request->test_name;
+            $medical_test_list =$medical_test_list->where("medical_tests.test_name", 'LIKE', '%' . $test_name . '%');
+        }
+        $medical_test_list = $medical_test_list->where("medical_tests.status", "=", "0")
+            ->select('medical_tests.*')
+            ->orderBy('medical_tests.test_name', 'asc')
+            ->where('medical_tests.status' , '=', "0")
+            ->get();
+
+
+            $medical_test_list_deleted =  DB::table('medical_tests')
+            ->select('medical_tests.*')
+            ->orderBy('medical_tests.test_name', 'asc')
+            ->where('medical_tests.status' , '=', "1")
+            ->get();
+            return view('medicalTestList',['medical_test_list' => $medical_test_list , 'medical_test_list_deleted' => $medical_test_list_deleted]);
+
+    }
+
+    public function edit($id)
+    {
+
+        $medical_tests =  DB::table('medical_tests')
+        ->select('medical_tests.*')
+        ->where('medical_tests.id' , '=', $id)
+        ->get();
+        
+        
+        return view('medicalTestEdit',['medical_tests' => $medical_tests]);
+    }
+
+    public function update(Request $request)
+
+    {
+
+        $medical_tests = medicaltest::find($request->id);
+        $medical_tests->update([
+        'test_name' => $request->test_name,
+    ]);
+    
+    session()->flash('message', 'Successfully Actived Medical Test  !');
+    try {
+        return redirect()->back()->with('success', 'Successfully Updated Medical Test !');
+
+    } catch (Exception $e) {
+
+        return redirect()->back()->with('error', 'Medical Test Updated Error ..!');
+    }
+}
+
+}

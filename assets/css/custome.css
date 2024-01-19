@@ -1,0 +1,41 @@
+.firstPage{
+    background-image: url('../../assets/img/first-page.jpg');
+}
+.registerPage{
+    background-color: #4b9e9e;
+}
+.loginPage{
+    background-image: url('../../assets/img/healthcare2.jpg');
+}
+.loginform{
+    background-color: white;
+    /*border-radius: 0rem 0rem 1rem 1rem;*/
+}
+.registerform{
+    background-color: white;
+}
+.mainSideBar{
+    background-color: azure;
+}
+
+.sm:flex-1 .sm:flex .sm:items-center .sm:justify-between
+{
+display: none !important;
+}
+
+#label {
+    position: absolute;
+    background-color: #f1f1f1;
+    padding: 10px;
+    border: 1px solid #d4d4d4;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+.hidden {
+    display: none;
+}
+
+
+       
+ 
