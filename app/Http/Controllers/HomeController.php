@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Appoinment;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Exception;
 
 class HomeController extends Controller
 {
@@ -26,219 +27,248 @@ class HomeController extends Controller
      */
     public function index()
     {
+        try {
 
-        $currentDate = Carbon::today();
+            $currentDate = Carbon::today();
 
-        $appoinments =  DB::table('appoinments')
-        ->select('appoinments.*', DB::raw('patients.name as patientname'),DB::raw('patients.id as patientid'))
-        ->leftjoin('patients','appoinments.patient_id','=','patients.id')
-        ->where('appoinments.status' , '=', '0')
-        ->where('appoinments.date' , '=', $currentDate)
-         ->where('patients.status' , '=', '0')
-             ->where('appoinments.active' , '=', '0')
-        ->get();
-        
-        
-        return view('newDoctorScreen', ['appoinments' => $appoinments]);
+            $appoinments =  DB::table('appoinments')
+                ->select('appoinments.*', DB::raw('patients.name as patientname'), DB::raw('patients.id as patientid'))
+                ->leftjoin('patients', 'appoinments.patient_id', '=', 'patients.id')
+                ->where('appoinments.status', '=', '0')
+                ->where('appoinments.date', '=', $currentDate)
+                ->where('patients.status', '=', '0')
+                ->where('appoinments.active', '=', '0')
+                ->get();
 
+
+            return view('newDoctorScreen', ['appoinments' => $appoinments]);
+        } catch (Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ]);
+        }
     }
-        public function helps(){
+    public function helps()
+    {
         return view('help');
     }
     public function view_patient_details($id)
     {
 
-        $diagnostic_categories =  DB::table('diagnostic_categories')
-        ->select('diagnostic_categories.*')
-        ->where('diagnostic_categories.status' , '=', '0')
-        ->get();
-        $currentDate = Carbon::today();
-        
-        $patientDtl =  DB::table('patients')
-        ->select('patients.*', DB::raw('titles.title as title'))
-        ->leftjoin('titles','patients.title','=','titles.id')
-        ->where('patients.id' , '=', $id)
-        ->get();
+        try {
 
-        $investigationDel =  DB::table('investigation_details')
-        ->select('investigation_details.*')
-        ->where('investigation_details.patient_id' , '=', $id)
-        ->where('investigation_details.channel_date' , '=', $currentDate)
+            $diagnostic_categories =  DB::table('diagnostic_categories')
+                ->select('diagnostic_categories.*')
+                ->where('diagnostic_categories.status', '=', '0')
+                ->get();
+            $currentDate = Carbon::today();
 
-        ->get();
+            $patientDtl =  DB::table('patients')
+                ->select('patients.*', DB::raw('titles.title as title'))
+                ->leftjoin('titles', 'patients.title', '=', 'titles.id')
+                ->where('patients.id', '=', $id)
+                ->get();
 
-        $drugs =  DB::table('drugs')
-        ->select('drugs.*')
-        ->where('drugs.status' , '=', '0')
-        ->get();
+            $investigationDel =  DB::table('investigation_details')
+                ->select('investigation_details.*')
+                ->where('investigation_details.patient_id', '=', $id)
+                ->where('investigation_details.channel_date', '=', $currentDate)
 
-        $medical_tests =  DB::table('medical_tests')
-        ->select('medical_tests.*')
-        ->where('medical_tests.status' , '=', '0')
-        ->get();
+                ->get();
 
-        $names = DB::table('patients')->where('status', 0)->pluck('name', 'id');
-        
+            $drugs =  DB::table('drugs')
+                ->select('drugs.*')
+                ->where('drugs.status', '=', '0')
+                ->get();
+
+            $medical_tests =  DB::table('medical_tests')
+                ->select('medical_tests.*')
+                ->where('medical_tests.status', '=', '0')
+                ->get();
+
+            $names = DB::table('patients')->where('status', 0)->pluck('name', 'id');
 
 
-        $investigation_history =  DB::table('investigation_history')
-        ->select('investigation_history.*')
-        ->where('investigation_history.patient_id' , '=', $id)
-        ->where('investigation_history.appointment_date' , '=', $currentDate)
-        ->get();
 
-        $reccomanded_opd_drugs =  DB::table('reccomanded_opd_drugs')
-        ->select('reccomanded_opd_drugs.*')
-        ->where('reccomanded_opd_drugs.patient_id' , '=', $id)
-        ->where('reccomanded_opd_drugs.appointment_date' , '=', $currentDate)
-        ->get();
+            $investigation_history =  DB::table('investigation_history')
+                ->select('investigation_history.*')
+                ->where('investigation_history.patient_id', '=', $id)
+                ->where('investigation_history.appointment_date', '=', $currentDate)
+                ->get();
 
-        $reccomanded_outside_drugs =  DB::table('reccomanded_outside_drugs')
-        ->select('reccomanded_outside_drugs.*')
-        ->where('reccomanded_outside_drugs.patient_id' , '=', $id)
-        ->where('reccomanded_outside_drugs.appointment_date' , '=', $currentDate)
-        ->get();
+            $reccomanded_opd_drugs =  DB::table('reccomanded_opd_drugs')
+                ->select('reccomanded_opd_drugs.*')
+                ->where('reccomanded_opd_drugs.patient_id', '=', $id)
+                ->where('reccomanded_opd_drugs.appointment_date', '=', $currentDate)
+                ->get();
 
-        $reccomanded_medical_test =  DB::table('medical_test')
-        ->select('medical_test.*')
-        ->where('medical_test.patient_id' , '=', $id)
-        ->where('medical_test.appointment_date' , '=', $currentDate)
-        ->get();
-        return view('newPatientDashBoardv1',['diagnostic_categories' => $diagnostic_categories ,'patientDtl' => $patientDtl ,'drugs' => $drugs,'names' => $names,'medical_tests' => $medical_tests,'investigationDel'=>$investigationDel, 'investigation_history'=>$investigation_history, 'reccomanded_opd_drugs'=>$reccomanded_opd_drugs, 'reccomanded_outside_drugs'=>$reccomanded_outside_drugs, 'reccomanded_medical_test'=>$reccomanded_medical_test]);
+            $reccomanded_outside_drugs =  DB::table('reccomanded_outside_drugs')
+                ->select('reccomanded_outside_drugs.*')
+                ->where('reccomanded_outside_drugs.patient_id', '=', $id)
+                ->where('reccomanded_outside_drugs.appointment_date', '=', $currentDate)
+                ->get();
+
+            $reccomanded_medical_test =  DB::table('medical_test')
+                ->select('medical_test.*')
+                ->where('medical_test.patient_id', '=', $id)
+                ->where('medical_test.appointment_date', '=', $currentDate)
+                ->get();
+            return view('newPatientDashBoardv1', ['diagnostic_categories' => $diagnostic_categories, 'patientDtl' => $patientDtl, 'drugs' => $drugs, 'names' => $names, 'medical_tests' => $medical_tests, 'investigationDel' => $investigationDel, 'investigation_history' => $investigation_history, 'reccomanded_opd_drugs' => $reccomanded_opd_drugs, 'reccomanded_outside_drugs' => $reccomanded_outside_drugs, 'reccomanded_medical_test' => $reccomanded_medical_test]);
+        } catch (Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ]);
+        }
     }
     public function view_appoiment_details($channel_date, $patient_id)
     {
+        try {
 
-        $diagnostic_categories =  DB::table('diagnostic_categories')
-        ->select('diagnostic_categories.*')
-        ->where('diagnostic_categories.status' , '=', '0')
-        ->get();
-        
-        $patientDtl =  DB::table('patients')
-        ->select('patients.*', DB::raw('titles.title as title'))
-        ->leftjoin('titles','patients.title','=','titles.id')
-        ->where('patients.id' , '=', $patient_id)
-        ->get();
+            $diagnostic_categories =  DB::table('diagnostic_categories')
+                ->select('diagnostic_categories.*')
+                ->where('diagnostic_categories.status', '=', '0')
+                ->get();
 
-        $investigationDel =  DB::table('investigation_details')
-        ->select('investigation_details.*')
-        ->where('investigation_details.patient_id' , '=', $patient_id)
-        ->where('investigation_details.channel_date' , '=', $channel_date)
+            $patientDtl =  DB::table('patients')
+                ->select('patients.*', DB::raw('titles.title as title'))
+                ->leftjoin('titles', 'patients.title', '=', 'titles.id')
+                ->where('patients.id', '=', $patient_id)
+                ->get();
 
-        ->get();
+            $investigationDel =  DB::table('investigation_details')
+                ->select('investigation_details.*')
+                ->where('investigation_details.patient_id', '=', $patient_id)
+                ->where('investigation_details.channel_date', '=', $channel_date)
 
-        $drugs =  DB::table('drugs')
-        ->select('drugs.*')
-        ->where('drugs.status' , '=', '0')
-        ->get();
+                ->get();
 
-        $medical_tests =  DB::table('medical_tests')
-        ->select('medical_tests.*')
-        ->where('medical_tests.status' , '=', '0')
-        ->get();
+            $drugs =  DB::table('drugs')
+                ->select('drugs.*')
+                ->where('drugs.status', '=', '0')
+                ->get();
 
-        $names = DB::table('patients')->where('status', 0)->pluck('name', 'id');
-        
+            $medical_tests =  DB::table('medical_tests')
+                ->select('medical_tests.*')
+                ->where('medical_tests.status', '=', '0')
+                ->get();
+
+            $names = DB::table('patients')->where('status', 0)->pluck('name', 'id');
 
 
-        $investigation_history =  DB::table('investigation_history')
-        ->select('investigation_history.*')
-        ->where('investigation_history.patient_id' , '=', $patient_id)
-        ->where('investigation_history.appointment_date' , '=', $channel_date)
-        ->get();
 
-        $reccomanded_opd_drugs =  DB::table('reccomanded_opd_drugs')
-        ->select('reccomanded_opd_drugs.*')
-        ->where('reccomanded_opd_drugs.patient_id' , '=', $patient_id)
-        ->where('reccomanded_opd_drugs.appointment_date' , '=', $channel_date)
-        ->get();
+            $investigation_history =  DB::table('investigation_history')
+                ->select('investigation_history.*')
+                ->where('investigation_history.patient_id', '=', $patient_id)
+                ->where('investigation_history.appointment_date', '=', $channel_date)
+                ->get();
 
-        $reccomanded_outside_drugs =  DB::table('reccomanded_outside_drugs')
-        ->select('reccomanded_outside_drugs.*')
-        ->where('reccomanded_outside_drugs.patient_id' , '=', $patient_id)
-        ->where('reccomanded_outside_drugs.appointment_date' , '=', $channel_date)
-        ->get();
+            $reccomanded_opd_drugs =  DB::table('reccomanded_opd_drugs')
+                ->select('reccomanded_opd_drugs.*')
+                ->where('reccomanded_opd_drugs.patient_id', '=', $patient_id)
+                ->where('reccomanded_opd_drugs.appointment_date', '=', $channel_date)
+                ->get();
 
-        $reccomanded_medical_test =  DB::table('medical_test')
-        ->select('medical_test.*')
-        ->where('medical_test.patient_id' , '=', $patient_id)
-        ->where('medical_test.appointment_date' , '=', $channel_date)
-        ->get();
-        return view('newPatientDashBoardv1',['diagnostic_categories' => $diagnostic_categories ,'patientDtl' => $patientDtl ,'drugs' => $drugs,'names' => $names,'medical_tests' => $medical_tests,'investigationDel'=>$investigationDel, 'investigation_history'=>$investigation_history, 'reccomanded_opd_drugs'=>$reccomanded_opd_drugs, 'reccomanded_outside_drugs'=>$reccomanded_outside_drugs, 'reccomanded_medical_test'=>$reccomanded_medical_test]);
-    }
+            $reccomanded_outside_drugs =  DB::table('reccomanded_outside_drugs')
+                ->select('reccomanded_outside_drugs.*')
+                ->where('reccomanded_outside_drugs.patient_id', '=', $patient_id)
+                ->where('reccomanded_outside_drugs.appointment_date', '=', $channel_date)
+                ->get();
 
-  public function appointment_search(Request $request)
-    {
-        
-         $validate = $request->validate([
-            'keyword' => 'required',
-        ]);
-
-        $mytime = Carbon::today();
-        $currentDate = $mytime->format('Y-m-d');
-
-        $appoinments = DB::table('appoinments')
-            ->leftjoin('patients', 'appoinments.patient_id', '=', 'patients.id');
-
-        if (isset($request->keyword)) {
-            $keyword = $request->keyword;
-            $appoinments = $appoinments->orwhere("patients.nic", 'LIKE', '%' . $keyword . '%');
-            $appoinments = $appoinments->orwhere("patients.family_name", 'LIKE', '%' . $keyword . '%');
-            $appoinments = $appoinments->orwhere("patients.name", 'LIKE', '%' . $keyword . '%');
-            $appoinments = $appoinments->orwhere("patients.mobile", 'LIKE', '%' . $keyword . '%');
-            $appoinments = $appoinments->orwhere("patients.address", 'LIKE', '%' . $keyword . '%');
+            $reccomanded_medical_test =  DB::table('medical_test')
+                ->select('medical_test.*')
+                ->where('medical_test.patient_id', '=', $patient_id)
+                ->where('medical_test.appointment_date', '=', $channel_date)
+                ->get();
+            return view('newPatientDashBoardv1', ['diagnostic_categories' => $diagnostic_categories, 'patientDtl' => $patientDtl, 'drugs' => $drugs, 'names' => $names, 'medical_tests' => $medical_tests, 'investigationDel' => $investigationDel, 'investigation_history' => $investigation_history, 'reccomanded_opd_drugs' => $reccomanded_opd_drugs, 'reccomanded_outside_drugs' => $reccomanded_outside_drugs, 'reccomanded_medical_test' => $reccomanded_medical_test]);
+        } catch (Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ]);
         }
-        $appoinments = $appoinments->where("patients.status", "=", "0")
-            ->select('appoinments.*', DB::raw('patients.name as patientname'), DB::raw('patients.id as patientid'))
-            ->where('appoinments.status', '=', '0')
-            ->where('appoinments.date', '=', $currentDate)
-            ->where('patients.status', '=', '0')
-            ->orderBy('appoinments.date', 'DESC')->get();
-
-        return view('newDoctorScreen', ['appoinments' => $appoinments]);
     }
-    
+
+    public function appointment_search(Request $request)
+    {
+
+        try {
+
+            $validate = $request->validate([
+                'keyword' => 'required',
+            ]);
+
+            $mytime = Carbon::today();
+            $currentDate = $mytime->format('Y-m-d');
+
+            $appoinments = DB::table('appoinments')
+                ->leftjoin('patients', 'appoinments.patient_id', '=', 'patients.id');
+
+            if (isset($request->keyword)) {
+                $keyword = $request->keyword;
+                $appoinments = $appoinments->orwhere("patients.nic", 'LIKE', '%' . $keyword . '%');
+                $appoinments = $appoinments->orwhere("patients.family_name", 'LIKE', '%' . $keyword . '%');
+                $appoinments = $appoinments->orwhere("patients.name", 'LIKE', '%' . $keyword . '%');
+                $appoinments = $appoinments->orwhere("patients.mobile", 'LIKE', '%' . $keyword . '%');
+                $appoinments = $appoinments->orwhere("patients.address", 'LIKE', '%' . $keyword . '%');
+            }
+            $appoinments = $appoinments->where("patients.status", "=", "0")
+                ->select('appoinments.*', DB::raw('patients.name as patientname'), DB::raw('patients.id as patientid'))
+                ->where('appoinments.status', '=', '0')
+                ->where('appoinments.date', '=', $currentDate)
+                ->where('patients.status', '=', '0')
+                ->orderBy('appoinments.date', 'DESC')->get();
+
+            return view('newDoctorScreen', ['appoinments' => $appoinments]);
+        } catch (Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
     public function homeview()
     {
+        try {
 
-        $currentDate = Carbon::today();
-        $waiting_list =  DB::table('appoinments')
-        ->select('appoinments.*')
-        ->leftjoin('patients','appoinments.patient_id','=','patients.id')
-        ->where('appoinments.status' , '=', "0")
-        ->where('appoinments.date' , '=', $currentDate)
-        ->where('patients.status' , '=', '0')
-        ->get()
-        ->count();
-
-
-        $finished_list =  DB::table('appoinments')
-    ->select('appoinments.*', DB::raw('patients.name as patientname'))
-    ->leftjoin('patients','appoinments.patient_id','=','patients.id')
-    ->where('appoinments.status' , '=', "1")
-    ->where('appoinments.date' , '=', $currentDate)
-    ->where('patients.status' , '=', '0')
-    ->get()
-    ->count();
+            $currentDate = Carbon::today();
+            $waiting_list =  DB::table('appoinments')
+                ->select('appoinments.*')
+                ->leftjoin('patients', 'appoinments.patient_id', '=', 'patients.id')
+                ->where('appoinments.status', '=', "0")
+                ->where('appoinments.date', '=', $currentDate)
+                ->where('patients.status', '=', '0')
+                ->get()
+                ->count();
 
 
-    $patient_list = DB::table('patients')
-            ->join('titles', 'titles.id', '=', 'patients.title')
-            ->where("patients.status", "=", "0")
-            ->select('patients.*','titles.title as title')
-            ->get()
-            ->count();
+            $finished_list =  DB::table('appoinments')
+                ->select('appoinments.*', DB::raw('patients.name as patientname'))
+                ->leftjoin('patients', 'appoinments.patient_id', '=', 'patients.id')
+                ->where('appoinments.status', '=', "1")
+                ->where('appoinments.date', '=', $currentDate)
+                ->where('patients.status', '=', '0')
+                ->get()
+                ->count();
+
+
+            $patient_list = DB::table('patients')
+                ->join('titles', 'titles.id', '=', 'patients.title')
+                ->where("patients.status", "=", "0")
+                ->select('patients.*', 'titles.title as title')
+                ->get()
+                ->count();
 
             $drugs_list =  DB::table('drugs')
-            ->select('drugs.*')
-            ->where('drugs.status' , '=', "0")
-            ->get()
-            ->count();
+                ->select('drugs.*')
+                ->where('drugs.status', '=', "0")
+                ->get()
+                ->count();
 
 
-        return view('home', ['waiting_list' => $waiting_list , 'finished_list' => $finished_list , 'patient_list' => $patient_list , 'drugs_list' => $drugs_list]);
-
+            return view('home', ['waiting_list' => $waiting_list, 'finished_list' => $finished_list, 'patient_list' => $patient_list, 'drugs_list' => $drugs_list]);
+        } catch (Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ]);
+        }
     }
-    
-    
 }
