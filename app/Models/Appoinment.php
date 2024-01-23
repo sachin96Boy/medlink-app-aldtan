@@ -44,4 +44,8 @@ class Appoinment extends Model
         'appdate_time' => date('Y-m-d H:i:s'),
     ];
 
+    public function patients(){
+        return $this->belongsTo(Patients::class);
+    }
+
 }

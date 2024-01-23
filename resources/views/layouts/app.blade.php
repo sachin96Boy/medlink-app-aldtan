@@ -8,7 +8,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-    
+
 
 
     <!-- CSRF Token -->
@@ -18,9 +18,9 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"
-    integrity="sha512-vKMx8UnXk60zUwyUnUPM3HbQo8QfmNx7+ltw8Pm5zLusl1XIfwcxo8DbWCqMGKaWeNxWA8yrx5v3SaVpMvR3CA=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"
+        integrity="sha512-vKMx8UnXk60zUwyUnUPM3HbQo8QfmNx7+ltw8Pm5zLusl1XIfwcxo8DbWCqMGKaWeNxWA8yrx5v3SaVpMvR3CA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
@@ -162,7 +162,7 @@
 
             #sidebar-wrapper {
                 width: 170px;
-                padding:50px;
+                padding: 50px;
             }
 
             #wrapper.toggled #sidebar-wrapper {
@@ -292,7 +292,7 @@
 </head>
 
 <body>
-    
+
     <div id="app" class=" overflow-hidden d-flex flex-column w-100 vh-100">
         <nav
             class="navbar navbar-expand-md d-flex flex-row align-items-center  justify-content-around  bg-white shadow-sm">
@@ -399,8 +399,8 @@
                         </li>
                         <li class="{{ Request::is('diagnosticCategoriesListView') ? 'active' : '' }}">
                             <a href="{{ route('diagnosticCategories_view') }}">
-        <i class="fa fa-list"></i>    Diagnostic Manage
-</a>
+                                <i class="fa fa-list"></i> Diagnostic Manage
+                            </a>
                         </li>
                         <li class="{{ Request::is('medicalTestView') ? 'active' : '' }}">
                             <a href="{{ route('medical_test_view') }}">
@@ -422,36 +422,28 @@
 
                 <!-- Another Componenet-->
             </div>
-            
+
             <div class="d-flex flex-grow-1 overflow-y-auto">
-                
-               
+
+
 
                 <main class="w-100">
-            <div class="position-relative ">
+                    <div class="position-relative">
 
-          <div class="position-absolute bg-top-0 end-0">
-            <x-tostmessage />
-          </div>
-        </div>
-        <div class="container-fluid py-2">
-            
-                    @yield('content')
-        </div>
-                    
-                     
+                        <div class="position-absolute  z-index-2 top-0 end-0 p-2">
+                            <x-tostmessage />
+                        </div>
+                    </div>
+                    <div class="container-fluid py-2">
+
+                        @yield('content')
+                    </div>
+
+
                 </main>
             </div>
         </div>
     </div>
-        
-     <script>
-      // A $( document ).ready() block.
-      $(document).ready(function () {
-        $('.toast').toast('show')
-      });
-    </script>
- 
 
     <script>
         const $button = document.querySelector('#sidebar-toggle');
@@ -494,12 +486,12 @@
         }
         setInterval(showDateTime, 1000);
     </script>
-   <script>
-      // A $( document ).ready() block.
-      $(document).ready(function () {
-        $('.toast').toast('show');
-        // alert("okay");
-      });
+    <script>
+        // A $( document ).ready() block.
+        $(document).ready(function() {
+            $('.toast').toast('show');
+            // alert("okay");
+        });
     </script>
 </body>
 
