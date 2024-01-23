@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\medicalTests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\MedicalTest;
@@ -130,10 +131,7 @@ class MedicalTestController extends Controller
     {
         try {
 
-            $medical_tests =  DB::table('medical_tests')
-                ->select('medical_tests.*')
-                ->where('medical_tests.id', '=', $id)
-                ->get();
+            $medical_tests = medicalTests::all()->where('id', '=', $id);
 
 
             return view('medicalTestEdit', ['medical_tests' => $medical_tests]);

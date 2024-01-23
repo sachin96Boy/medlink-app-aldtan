@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Appoinment;
 use App\Models\InvestigationDetails;
 use App\Models\investigationHistory;
+use App\Models\MedicalTest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Title;
@@ -34,14 +36,9 @@ class PatientController extends Controller
 
         try {
 
-            $titles =  DB::table('titles')
-                ->select('titles.*')
-                ->get();
+            $titles =  Title::all();
 
-            $familyNames =  DB::table('patients')
-                ->select('patients.family_name')
-                ->groupBy('patients.family_name')
-                ->get();
+            $familyNames =  Patients::all('family_name')->groupBy('family_name');
 
 
             return view('patientAdd', ['titles' => $titles], ['familyNames' => $familyNames]);
@@ -88,8 +85,8 @@ class PatientController extends Controller
 
         try {
 
-            $patient_list = DB::table('patients')
-                ->join('titles', 'titles.id', '=', 'patients.title');
+            $patient_list = Patients::with('title')->select('patients.*', 'titles.id as title')->leftJoin('titles', 'patients.title', 'titles.id')->get();
+
 
             if (isset($request->family_name)) {
                 $family_name = $request->family_name;
@@ -110,13 +107,7 @@ class PatientController extends Controller
     {
         $selectedValues = $request->input('selectedRows');
         $id = $request->input('id');
-        $patients =  DB::table('patients')
-            ->select('patients.*', DB::raw('titles.id as title'))
-            ->leftjoin('titles', 'patients.title', '=', 'titles.id')
-            ->where('patients.id', '=', $id)
-            ->get();
-
-
+        $patients =  Patients::with('title')->select('patients.*', 'titles.id as title')->leftJoin('titles', 'patients.title', 'titles.id')->where('id', '=', $id)->get();
         $pageName = $request->input('pageName');
 
         $pdf = Pdf::loadView('test', ['pageName' => $pageName, 'selectedValues' => $selectedValues, 'patients' => $patients]);
@@ -125,11 +116,7 @@ class PatientController extends Controller
     public function drugReport(Request $request)
     {
         $id = $request->input('id');
-        $patients =  DB::table('patients')
-            ->select('patients.*', DB::raw('titles.id as title'))
-            ->leftjoin('titles', 'patients.title', '=', 'titles.id')
-            ->where('patients.id', '=', $id)
-            ->get();
+        $patients =  Patients::with('title')->select('patients.*', 'titles.id as title')->leftJoin('titles', 'patients.title', 'titles.id')->where('id', '=', $id)->get();
 
         $selectedRows = $request->input('selectedRows');
         $pageName = $request->input('pageName');
@@ -147,23 +134,13 @@ class PatientController extends Controller
 
             $current = Carbon::today();
 
-            $famname =  DB::table('patients')
-                ->select('patients.family_name')
-                ->groupBy('patients.family_name')
-                ->get();
-
-            $apoinment_list = DB::table('appoinments')
-                ->select('appoinments.*')
-                ->where('appoinments.date', '=', $current)
-                ->where('appoinments.active', '=', '0')
-                ->get();
+            $famname =  Patients::all('family_name')->groupBy('family_name');
 
 
-            $patient_list = DB::table('patients')
-                ->join('titles', 'titles.id', '=', 'patients.title')
-                ->where("patients.status", "=", "0")
-                ->select('patients.*', 'titles.title as title')
-                ->get();
+            $apoinment_list = Appoinment::all()->where('date', '=', $current)->where('active', '=', '0');
+
+
+            $patient_list = Patients::with('title')->select('patients.*', 'titles.title as title')->join('titles', 'titles.id', 'patients.title')->where('status', '=', '0')->get();
 
             return view('patientListView', ['famname' => $famname, 'patient_list' => $patient_list, 'appoinment_list' => $apoinment_list]);
         } catch (Exception $e) {
@@ -180,13 +157,9 @@ class PatientController extends Controller
                 'keyword' => 'required',
             ]);
 
-            $famname =  DB::table('patients')
-                ->select('patients.family_name')
-                ->groupBy('patients.family_name')
-                ->get();
+            $famname =  Patients::all('family_name')->groupBy('family_name');
 
-            $patient_list = DB::table('patients')
-                ->join('titles', 'titles.id', '=', 'patients.title');
+            $patient_list = Patients::with('title')->join('titles', 'patients.title', 'titles.id')->get();
 
             if (isset($request->keyword)) {
                 $keyword = $request->keyword;
@@ -212,22 +185,11 @@ class PatientController extends Controller
 
         try {
 
-            $titles =  DB::table('titles')
-                ->select('titles.*')
-                ->get();
+            $titles =  Title::all();
 
+            $patients =  Patients::with('title')->select('patients.*', 'titles.id as title')->leftJoin('titles', 'patients.title', 'titles.id')->where('patients.id', '=', $id)->get();
 
-
-            $patients =  DB::table('patients')
-                ->select('patients.*', DB::raw('titles.id as title'))
-                ->leftjoin('titles', 'patients.title', '=', 'titles.id')
-                ->where('patients.id', '=', $id)
-                ->get();
-
-            $famname =  DB::table('patients')
-                ->select('patients.family_name')
-                ->groupBy('patients.family_name')
-                ->get();
+            $famname =  Patients::all('family_name')->groupBy('family_name');
 
             return view('patientEditView', ['titles' => $titles, 'patients' => $patients, 'famname' => $famname]);
         } catch (Exception $e) {
@@ -239,20 +201,11 @@ class PatientController extends Controller
     {
         try {
 
-            $titles =  DB::table('titles')
-                ->select('titles.*')
-                ->get();
+            $titles =  Title::all();
 
-            $famname =  DB::table('patients')
-                ->select('patients.family_name')
-                ->groupBy('patients.family_name')
-                ->get();
+            $famname =  Patients::all()->groupBy('family_name');
 
-            $patients =  DB::table('patients')
-                ->select('patients.*', DB::raw('titles.id as title'))
-                ->join('titles', 'patients.title', '=', 'titles.id')
-                ->where('patients.id', '=', $id)
-                ->get();
+            $patients =  Patients::with('title')->select('patients.*', 'titles.id as title')->join('titles', 'patients.title', '=', 'titles.id')->where('patients.id', $id)->first();
 
             return view('patientEditViewTable', ['titles' => $titles, 'patients' => $patients, 'famname' => $famname]);
         } catch (Exception $e) {
@@ -313,15 +266,9 @@ class PatientController extends Controller
 
         try {
 
-            $patients =  DB::table('patients')
-                ->select('patients.*')
-                ->where('patients.id', $id)
-                ->get();
+            $patients =  Patients::all()->where('id', '=', $id);
 
-            $medicaltest = DB::table('medical_test')
-                ->select('medical_test.*')
-                ->where('medical_test.patient_id', '=', $id)
-                ->get();
+            $medicaltest = MedicalTest::all()->where('patient_id', '=', $id);
 
             return view('medicalHistory', ['medical_history' => $medicaltest, 'patients' => $patients]);
         } catch (Exception $e) {
@@ -357,14 +304,8 @@ class PatientController extends Controller
     {
         try {
 
-            $patients =  DB::table('patients')
-                ->select('patients.*')
-                ->where('patients.id', $id)
-                ->get();
-            $investigation_details = DB::table('investigation_details')
-                ->select('investigation_details.*',)
-                ->where('patient_id', $id)
-                ->get();
+            $patients =  Patients::all()->where('patient_id', '=', $id);
+            $investigation_details = InvestigationDetails::all()->where('patient_id', '=', $id);
             return view('investigation_history', ['investigation_details' => $investigation_details, 'patients' => $patients]);
         } catch (Exception $e) {
             return response()->json([
