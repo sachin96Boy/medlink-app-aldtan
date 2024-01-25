@@ -325,6 +325,7 @@
                     @endif
                 @else
                     <div class="nav-item  dropdown  show d-flex align-items-center">
+                        <i class="fa-solid fa-user"></i>
                         <a id="navbarDropdown" class="nav-link gap-2 dropdown-toggle" href="#" role="button"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             {{ Auth::user()->name }}
