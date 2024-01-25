@@ -85,7 +85,7 @@ class PatientController extends Controller
 
         try {
 
-            $patient_list = Patients::with('title')->select('patients.*', 'titles.id as title')->leftJoin('titles', 'patients.title', 'titles.id')->get();
+            $patient_list = Patients::with('title')->select('patients.*', 'titles.id as title')->leftJoin('titles', 'patients.title', '=', 'titles.id')->get();
 
 
             if (isset($request->family_name)) {
@@ -107,7 +107,7 @@ class PatientController extends Controller
     {
         $selectedValues = $request->input('selectedRows');
         $id = $request->input('id');
-        $patients =  Patients::with('title')->select('patients.*', 'titles.id as title')->leftJoin('titles', 'patients.title', 'titles.id')->where('id', '=', $id)->get();
+        $patients =  Patients::with('title')->select('patients.*', 'titles.id as title')->leftJoin('titles', 'patients.title', '=' , 'titles.id')->where('id', '=', $id)->get();
         $pageName = $request->input('pageName');
 
         $pdf = Pdf::loadView('test', ['pageName' => $pageName, 'selectedValues' => $selectedValues, 'patients' => $patients]);
@@ -116,7 +116,7 @@ class PatientController extends Controller
     public function drugReport(Request $request)
     {
         $id = $request->input('id');
-        $patients =  Patients::with('title')->select('patients.*', 'titles.id as title')->leftJoin('titles', 'patients.title', 'titles.id')->where('id', '=', $id)->get();
+        $patients =  Patients::with('title')->select('patients.*', 'titles.id as title')->leftJoin('titles', 'patients.title', '=' , 'titles.id')->where('id', '=', $id)->get();
 
         $selectedRows = $request->input('selectedRows');
         $pageName = $request->input('pageName');
@@ -140,7 +140,7 @@ class PatientController extends Controller
             $apoinment_list = Appoinment::all()->where('date', '=', $current)->where('active', '=', '0');
 
 
-            $patient_list = Patients::with('title')->select('patients.*', 'titles.title as title')->join('titles', 'titles.id', 'patients.title')->where('status', '=', '0')->get();
+            $patient_list = Patients::with('title')->select('patients.*', 'titles.title as title')->join('titles', 'titles.id', '=' , 'patients.title')->where('status', '=', '0')->get();
 
             return view('patientListView', ['famname' => $famname, 'patient_list' => $patient_list, 'appoinment_list' => $apoinment_list]);
         } catch (Exception $e) {
@@ -159,7 +159,7 @@ class PatientController extends Controller
 
             $famname =  Patients::all('family_name')->groupBy('family_name');
 
-            $patient_list = Patients::with('title')->join('titles', 'patients.title', 'titles.id')->get();
+            $patient_list = Patients::with('title')->join('titles', 'patients.title', '=' , 'titles.id')->get();
 
             if (isset($request->keyword)) {
                 $keyword = $request->keyword;
@@ -187,7 +187,7 @@ class PatientController extends Controller
 
             $titles =  Title::all();
 
-            $patients =  Patients::with('title')->select('patients.*', 'titles.id as title')->leftJoin('titles', 'patients.title', 'titles.id')->where('patients.id', '=', $id)->get();
+            $patients =  Patients::with('title')->select('patients.*', 'titles.id as title')->leftJoin('titles', 'patients.title', '=', 'titles.id')->where('patients.id', '=', $id)->get();
 
             $famname =  Patients::all('family_name')->groupBy('family_name');
 

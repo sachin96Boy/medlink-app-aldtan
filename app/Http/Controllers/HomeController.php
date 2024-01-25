@@ -2,8 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\InvestigationDetails;
 use Illuminate\Http\Request;
 use App\Models\Appoinment;
+use App\Models\DiagnosticCategory;
+use App\Models\Drugs;
+use App\Models\investigationHistory;
+use App\Models\medicalTests;
+use App\Models\Patients;
+use App\Models\reccomandedOpdDrugs;
+use App\Models\reccomandOutsideDrugs;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Exception;
@@ -31,15 +39,7 @@ class HomeController extends Controller
 
             $currentDate = Carbon::today();
 
-            $appoinments =  DB::table('appoinments')
-                ->select('appoinments.*', DB::raw('patients.name as patientname'), DB::raw('patients.id as patientid'))
-                ->leftjoin('patients', 'appoinments.patient_id', '=', 'patients.id')
-                ->where('appoinments.status', '=', '0')
-                ->where('appoinments.date', '=', $currentDate)
-                ->where('patients.status', '=', '0')
-                ->where('appoinments.active', '=', '0')
-                ->get();
-
+            $appoinments =  Appoinment::with('patients')->select('appoinments.*', 'patients.name as patientname', 'patients.id as patientid')->leftJoin('patients', 'appoinments.patient_id', '=', 'patients.id')->where('appoinments.status', '=', '0')->where('appoinments.date', '=', $currentDate)->where('patients.status', '=', '0')->where('appoinments.active', '=', '0')->get();
 
             return view('newDoctorScreen', ['appoinments' => $appoinments]);
         } catch (Exception $e) {
@@ -57,62 +57,29 @@ class HomeController extends Controller
 
         try {
 
-            $diagnostic_categories =  DB::table('diagnostic_categories')
-                ->select('diagnostic_categories.*')
-                ->where('diagnostic_categories.status', '=', '0')
-                ->get();
             $currentDate = Carbon::today();
+            $diagnostic_categories =  DiagnosticCategory::all()->where('status', '=', '0');
 
-            $patientDtl =  DB::table('patients')
-                ->select('patients.*', DB::raw('titles.title as title'))
-                ->leftjoin('titles', 'patients.title', '=', 'titles.id')
-                ->where('patients.id', '=', $id)
-                ->get();
+            $patientDtl =  Patients::with('titles')->select('patients.*', 'titles.title as title')->leftJoin('titles', 'patients.title', '=', 'titles.id')->where('patients.id', '=', $id)->get();
 
-            $investigationDel =  DB::table('investigation_details')
-                ->select('investigation_details.*')
-                ->where('investigation_details.patient_id', '=', $id)
-                ->where('investigation_details.channel_date', '=', $currentDate)
+            $investigationDel =  InvestigationDetails::all()->where('patient_id', '=', $id)->where('channel_date', '=', $currentDate);
 
-                ->get();
+            $drugs =  Drugs::all()->where('status', '=', '0');
 
-            $drugs =  DB::table('drugs')
-                ->select('drugs.*')
-                ->where('drugs.status', '=', '0')
-                ->get();
+            $medical_tests =  medicalTests::all()->where('status', '=', '0');
 
-            $medical_tests =  DB::table('medical_tests')
-                ->select('medical_tests.*')
-                ->where('medical_tests.status', '=', '0')
-                ->get();
-
-            $names = DB::table('patients')->where('status', 0)->pluck('name', 'id');
+            $names = Patients::all()->where('status', '=', '0')->pluck('name', 'id');
 
 
+            $investigation_history =  investigationHistory::all()->where('patient_id', '=', $id)->where('appointment_date', '=', $currentDate);
 
-            $investigation_history =  DB::table('investigation_history')
-                ->select('investigation_history.*')
-                ->where('investigation_history.patient_id', '=', $id)
-                ->where('investigation_history.appointment_date', '=', $currentDate)
-                ->get();
+            $reccomanded_opd_drugs =  reccomandedOpdDrugs::all()->where('patient_id', '=', $id)->where('appoinment_date', '=', $currentDate);
 
-            $reccomanded_opd_drugs =  DB::table('reccomanded_opd_drugs')
-                ->select('reccomanded_opd_drugs.*')
-                ->where('reccomanded_opd_drugs.patient_id', '=', $id)
-                ->where('reccomanded_opd_drugs.appointment_date', '=', $currentDate)
-                ->get();
 
-            $reccomanded_outside_drugs =  DB::table('reccomanded_outside_drugs')
-                ->select('reccomanded_outside_drugs.*')
-                ->where('reccomanded_outside_drugs.patient_id', '=', $id)
-                ->where('reccomanded_outside_drugs.appointment_date', '=', $currentDate)
-                ->get();
+            $reccomanded_outside_drugs =  reccomandOutsideDrugs::all()->where('patient_id', '=', $id)->where('appoinment_date', '=', $currentDate);
 
-            $reccomanded_medical_test =  DB::table('medical_test')
-                ->select('medical_test.*')
-                ->where('medical_test.patient_id', '=', $id)
-                ->where('medical_test.appointment_date', '=', $currentDate)
-                ->get();
+            $reccomanded_medical_test =  medicalTests::all()->where('patient_id', '=', $id)->where('appoinment_date', '=', $currentDate);
+
             return view('newPatientDashBoardv1', ['diagnostic_categories' => $diagnostic_categories, 'patientDtl' => $patientDtl, 'drugs' => $drugs, 'names' => $names, 'medical_tests' => $medical_tests, 'investigationDel' => $investigationDel, 'investigation_history' => $investigation_history, 'reccomanded_opd_drugs' => $reccomanded_opd_drugs, 'reccomanded_outside_drugs' => $reccomanded_outside_drugs, 'reccomanded_medical_test' => $reccomanded_medical_test]);
         } catch (Exception $e) {
             return response()->json([
@@ -124,61 +91,25 @@ class HomeController extends Controller
     {
         try {
 
-            $diagnostic_categories =  DB::table('diagnostic_categories')
-                ->select('diagnostic_categories.*')
-                ->where('diagnostic_categories.status', '=', '0')
-                ->get();
+            $diagnostic_categories =  DiagnosticCategory::all()->where('status', '=', 0);
 
-            $patientDtl =  DB::table('patients')
-                ->select('patients.*', DB::raw('titles.title as title'))
-                ->leftjoin('titles', 'patients.title', '=', 'titles.id')
-                ->where('patients.id', '=', $patient_id)
-                ->get();
+            $patientDtl =  Patients::with('title')->select('patients.*', 'titles.title as title')->leftJoin('titles', 'patients.title', '=', 'titles.id')->where('patients.id', '=', $patient_id)->get();
 
-            $investigationDel =  DB::table('investigation_details')
-                ->select('investigation_details.*')
-                ->where('investigation_details.patient_id', '=', $patient_id)
-                ->where('investigation_details.channel_date', '=', $channel_date)
+            $investigationDel =  InvestigationDetails::all()->where('patient_id', '=', $patient_id)->where('channel_date', '=', $channel_date);
 
-                ->get();
+            $drugs =  Drugs::all()->where('status', '=', '0');
 
-            $drugs =  DB::table('drugs')
-                ->select('drugs.*')
-                ->where('drugs.status', '=', '0')
-                ->get();
+            $medical_tests =  medicalTests::all()->where('status', '=', '0');
 
-            $medical_tests =  DB::table('medical_tests')
-                ->select('medical_tests.*')
-                ->where('medical_tests.status', '=', '0')
-                ->get();
+            $names = Patients::all()->where('status', '=', '0')->pluck('name', 'id');
 
-            $names = DB::table('patients')->where('status', 0)->pluck('name', 'id');
+            $investigation_history =  investigationHistory::all()->where('patient_id', '=', $patient_id)->where('appoinment_date', '=', $channel_date);
 
+            $reccomanded_opd_drugs =  reccomandedOpdDrugs::all()->where('patient_id', '=', $patient_id)->where('appoinment_date', '=', $channel_date);
 
+            $reccomanded_outside_drugs =  reccomandOutsideDrugs::all()->where('patient_id', '=', $patient_id)->where('appoinment_date', '=', $channel_date);
 
-            $investigation_history =  DB::table('investigation_history')
-                ->select('investigation_history.*')
-                ->where('investigation_history.patient_id', '=', $patient_id)
-                ->where('investigation_history.appointment_date', '=', $channel_date)
-                ->get();
-
-            $reccomanded_opd_drugs =  DB::table('reccomanded_opd_drugs')
-                ->select('reccomanded_opd_drugs.*')
-                ->where('reccomanded_opd_drugs.patient_id', '=', $patient_id)
-                ->where('reccomanded_opd_drugs.appointment_date', '=', $channel_date)
-                ->get();
-
-            $reccomanded_outside_drugs =  DB::table('reccomanded_outside_drugs')
-                ->select('reccomanded_outside_drugs.*')
-                ->where('reccomanded_outside_drugs.patient_id', '=', $patient_id)
-                ->where('reccomanded_outside_drugs.appointment_date', '=', $channel_date)
-                ->get();
-
-            $reccomanded_medical_test =  DB::table('medical_test')
-                ->select('medical_test.*')
-                ->where('medical_test.patient_id', '=', $patient_id)
-                ->where('medical_test.appointment_date', '=', $channel_date)
-                ->get();
+            $reccomanded_medical_test =  medicalTests::all()->where('patient_id', '=', $patient_id)->where('appoinment_date', '=', $channel_date);
             return view('newPatientDashBoardv1', ['diagnostic_categories' => $diagnostic_categories, 'patientDtl' => $patientDtl, 'drugs' => $drugs, 'names' => $names, 'medical_tests' => $medical_tests, 'investigationDel' => $investigationDel, 'investigation_history' => $investigation_history, 'reccomanded_opd_drugs' => $reccomanded_opd_drugs, 'reccomanded_outside_drugs' => $reccomanded_outside_drugs, 'reccomanded_medical_test' => $reccomanded_medical_test]);
         } catch (Exception $e) {
             return response()->json([
@@ -230,38 +161,13 @@ class HomeController extends Controller
         try {
 
             $currentDate = Carbon::today();
-            $waiting_list =  DB::table('appoinments')
-                ->select('appoinments.*')
-                ->leftjoin('patients', 'appoinments.patient_id', '=', 'patients.id')
-                ->where('appoinments.status', '=', "0")
-                ->where('appoinments.date', '=', $currentDate)
-                ->where('patients.status', '=', '0')
-                ->get()
-                ->count();
+            $waiting_list =  Appoinment::with('patients')->select('appoinments.*')->leftJoin('patients', 'appoinments.patient_id', '=', 'patients.id')->where('appoinments.status', '=', '0')->where('appoinments.date', '=', $currentDate)->where('patients.status', '=', '0')->get()->count();
 
+            $finished_list =  Appoinment::with('patients')->select('appoinments.*', 'patients.name as patientname')->leftJoin('patients', 'appoinments.patient_id', '=', 'patients.id')->where('appoinments.status', '=', '1')->where('appoinments.date', '=', $currentDate)->where('patients.status', '=', '0')->get()->count();
 
-            $finished_list =  DB::table('appoinments')
-                ->select('appoinments.*', DB::raw('patients.name as patientname'))
-                ->leftjoin('patients', 'appoinments.patient_id', '=', 'patients.id')
-                ->where('appoinments.status', '=', "1")
-                ->where('appoinments.date', '=', $currentDate)
-                ->where('patients.status', '=', '0')
-                ->get()
-                ->count();
+            $patient_list = Patients::with('title')->select('patients.*', 'titles.title as title')->join('titles', 'titles.id', '=', 'patients.title')->where('patients.status', '=', '0')->count();
 
-
-            $patient_list = DB::table('patients')
-                ->join('titles', 'titles.id', '=', 'patients.title')
-                ->where("patients.status", "=", "0")
-                ->select('patients.*', 'titles.title as title')
-                ->get()
-                ->count();
-
-            $drugs_list =  DB::table('drugs')
-                ->select('drugs.*')
-                ->where('drugs.status', '=', "0")
-                ->get()
-                ->count();
+            $drugs_list =  Drugs::all()->where('status', '=', '0')->count();
 
 
             return view('home', ['waiting_list' => $waiting_list, 'finished_list' => $finished_list, 'patient_list' => $patient_list, 'drugs_list' => $drugs_list]);

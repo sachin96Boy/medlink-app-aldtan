@@ -26,15 +26,9 @@ class DiagnosticCategoriesController extends Controller
      */
     public function view()
     {
-        try {
 
-            return view('diagnosticCategoriesAddView');
-        } catch (Exception $e) {
-            return response()->json([
-                'error' => $e->getMessage(),
 
-            ], 400);
-        }
+        return view('diagnosticCategoriesAddView');
     }
 
     public function add(Request $request)
@@ -57,18 +51,9 @@ class DiagnosticCategoriesController extends Controller
     {
         try {
 
-            $diagnosticcategories_list =  DB::table('diagnostic_categories')
-                ->select('diagnostic_categories.*')
-                ->where('diagnostic_categories.status', '=', "0")
-                ->orderBy('diagnostic_categories.category_name', 'asc')
-                ->get();
+            $diagnosticcategories_list =  DiagnosticCategory::all()->where('status', '=', '0')->sortBy('category_name');
 
-            $diagnosticcategories_deleted_list =  DB::table('diagnostic_categories')
-                ->select('diagnostic_categories.*')
-                ->where('diagnostic_categories.status', '=', "1")
-                ->orderBy('diagnostic_categories.category_name', 'asc')
-
-                ->get();
+            $diagnosticcategories_deleted_list =  DiagnosticCategory::all()->where('status', '=', '1')->sortBy('category_name');
 
 
             return view('diagnosticCategoriesListView', ['diagnosticcategories_list' => $diagnosticcategories_list, 'diagnosticcategories_deleted_list' => $diagnosticcategories_deleted_list]);
@@ -147,10 +132,8 @@ class DiagnosticCategoriesController extends Controller
     public function edit($id)
     {
         try {
-            $diagnostic_categories =  DB::table('diagnostic_categories')
-                ->select('diagnostic_categories.*')
-                ->where('diagnostic_categories.id', '=', $id)
-                ->get();
+            $diagnostic_categories =  DiagnosticCategory::all()->where('id', '=', $id);
+
             return view('diagnosticCategoriesEditView', ['diagnostic_categories' => $diagnostic_categories]);
         } catch (Exception $e) {
             return response()->json([

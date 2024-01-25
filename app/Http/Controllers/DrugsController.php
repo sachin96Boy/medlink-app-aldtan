@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\reccomandOutsideDrugs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Drugs;
+use App\Models\Patients;
+use App\Models\reccomandedOpdDrugs;
 use Exception;
 
 class DrugsController extends Controller
@@ -26,14 +29,8 @@ class DrugsController extends Controller
      */
     public function view()
     {
-        try {
 
-            return view('drugsAdd');
-        } catch (Exception $e) {
-            return response()->json([
-                'error' => $e->getMessage()
-            ]);
-        }
+        return view('drugsAdd');
     }
 
     public function add(Request $request)
@@ -56,17 +53,9 @@ class DrugsController extends Controller
     {
         try {
 
-            $drugs_list =  DB::table('drugs')
-                ->select('drugs.*')
-                ->where('drugs.status', '=', "0")
-                ->orderBy('drugs.drug_name', 'asc')
-                ->get();
+            $drugs_list =  Drugs::all()->where('status', '=', '0')->sortBy('drug_name');
 
-            $drugs_list_deleted =  DB::table('drugs')
-                ->select('drugs.*')
-                ->where('drugs.status', '=', "1")
-                ->orderBy('drugs.drug_name', 'asc')
-                ->get();
+            $drugs_list_deleted =  Drugs::all()->where('status', '=', '1')->sortBy('drug_name');
 
             return view('drugsList', ['drugs_list' => $drugs_list, 'drugs_list_deleted' => $drugs_list_deleted]);
         } catch (Exception $e) {
@@ -148,10 +137,7 @@ class DrugsController extends Controller
 
         try {
 
-            $drugs =  DB::table('drugs')
-                ->select('drugs.*')
-                ->where('drugs.id', '=', $id)
-                ->get();
+            $drugs =  Drugs::all()->where('id', '=', $id);
             return view('drugsEdit', ['drugs' => $drugs]);
         } catch (Exception $e) {
             return response()->json([
@@ -182,19 +168,11 @@ class DrugsController extends Controller
     {
         try {
 
-            $drug_history = DB::table('reccomanded_opd_drugs')
-                ->select('drug', 'dose', 'period', 'appointment_date')
-                ->where('patient_id', $id)
-                ->get();
-            $drug_out = DB::table('reccomanded_outside_drugs')
-                ->select('drug', 'dose', 'period', 'appointment_date')
-                ->where('patient_id', $id)
-                ->get();
+            $drug_history = reccomandedOpdDrugs::all('drug', 'dose', 'period', 'appointment_date')->where('patient_id', '=', $id);
 
-            $patients =  DB::table('patients')
-                ->select('patients.*')
-                ->where('patients.id', $id)
-                ->get();
+            $drug_out = reccomandOutsideDrugs::all('drug', 'dose', 'period', 'appointment_date')->where('patient_id', '=', $id);
+
+            $patients =  Patients::all()->where('id', '=', $id);
             return view('drug_history', ['drug_history' => $drug_history, 'drug_out' => $drug_out, 'patients' => $patients]);
         } catch (Exception $e) {
             return response()->json([
