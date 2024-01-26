@@ -148,10 +148,12 @@ class DiagnosticCategoriesController extends Controller
 
         try {
             $diagnostic_categories = diagnosticCategory::find($request->id);
-            $diagnostic_categories->update([
-                'category_name' => $request->category_name,
+            $diagnostic_categories
+                ->category_name = $request->category_name;
 
-            ]);
+            $diagnostic_categories->save();
+
+
             session()->flash('message', 'Successfully Updated diagnostic Category !');
             return redirect()->back()->with('success', ' Successfully Updated diagnostic Category !');
         } catch (Exception $e) {
