@@ -9,4 +9,8 @@ class Patients extends Model
 {
     use HasFactory;
     protected $guarded=[];
+
+    public function title(){
+        return $this->belongsTo(Title::class,"title", 'id');
+    }
 }
