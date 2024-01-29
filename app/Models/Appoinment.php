@@ -9,14 +9,14 @@ class Appoinment extends Model
 {
     use HasFactory;
     protected $guarded=[
-        'appointment_no',
-        'patient_id',
-        'patient name',
-        'finger_print',
-        'date',
-        'status',
-        'appdate time',
-        'active',
+        // 'appointment_no',
+        // 'patient_id',
+        // 'patient name',
+        // 'finger_print',
+        // 'date',
+        // 'status',
+        // 'appdate time',
+        // 'active',
     ];
 
     /**
@@ -38,11 +38,11 @@ class Appoinment extends Model
      *
      * @var array
      */
-    protected $attributes = [
-        'status' => false,
-        'active' => false,
-        'appdate_time' => date('Y-m-d H:i:s'),
-    ];
+    // protected $attributes = [
+    //     'status' => false,
+    //     'active' => false,
+    //     'appdate_time' => date('Y-m-d H:i:s'),
+    // ];
 
     public function patients(){
         return $this->belongsTo(Patients::class);
