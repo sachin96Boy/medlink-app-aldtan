@@ -44,7 +44,7 @@ class MedicalTestController extends Controller
             return redirect()->back()->with('success', 'Successfully Added Medical Test !');
         } catch (Exception $e) {
 
-            return redirect()->back()->with('error', 'Medical Test Inserting Error ..!');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -73,7 +73,7 @@ class MedicalTestController extends Controller
             return redirect()->back()->with('success', 'Successfully Deleted Medical Test !');
         } catch (Exception $e) {
 
-            return redirect()->back()->with('error', 'medical_test Deleted Error ..!');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -89,7 +89,7 @@ class MedicalTestController extends Controller
             return redirect()->back()->with('success', 'Successfully Actived Medical Test !');
         } catch (Exception $e) {
 
-            return redirect()->back()->with('error', 'medical_test Active Error ..!');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -148,7 +148,7 @@ class MedicalTestController extends Controller
             return redirect()->back()->with('success', 'Successfully Updated Medical Test !');
         } catch (Exception $e) {
 
-            return redirect()->back()->with('error', 'Medical Test Updated Error ..!');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 }

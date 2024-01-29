@@ -51,8 +51,8 @@ class PatientController extends Controller
 
     public function add(Request $request)
     {
-
         try {
+            
             $data = [
                 'title' => $request->title,
                 'family_name' => $request->family_name,
@@ -70,13 +70,13 @@ class PatientController extends Controller
                 'nic' => $request->nic,
                 'occupation' => $request->occupation,
             ];
-            Patients::create($data);
+            Patients::with('title')->create($data);
 
             session()->flash('message', 'Successfully Added Patient !');
             return redirect()->back()->with('success', 'Successfully Added Patient !');
         } catch (Exception $e) {
 
-            return redirect()->back()->with('error', 'Patient Inserting Error ..!');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -241,7 +241,7 @@ class PatientController extends Controller
             return redirect()->back()->with('success', 'Successfully Updated Patient !');
         } catch (Exception $e) {
 
-            return redirect()->back()->with('error', 'Patient Updated Error ..!');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -257,7 +257,7 @@ class PatientController extends Controller
             return redirect()->back()->with('success', ' Successfully Deleted Patient !');
         } catch (Exception $e) {
 
-            return redirect()->back()->with('error', 'Patient Deleted Error ..!');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
