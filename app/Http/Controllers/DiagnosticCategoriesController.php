@@ -44,7 +44,7 @@ class DiagnosticCategoriesController extends Controller
             return redirect()->back()->with('success', 'Successfully Added Diagnostic Categorie!');
         } catch (Exception $e) {
 
-            return redirect()->back()->with('error', 'Diagnostic Categorie Inserting Error ..!');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
     public function  diagnosticCategories_list()
@@ -76,7 +76,7 @@ class DiagnosticCategoriesController extends Controller
             return redirect()->back()->with('success', 'Successfully Deleted diagnostic Category !');
         } catch (Exception $e) {
 
-            return redirect()->back()->with('error', 'diagnosticCategory Deleted Error ..!');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -92,7 +92,7 @@ class DiagnosticCategoriesController extends Controller
             return redirect()->back()->with('success', 'Successfully Actived diagnostic Category !');
         } catch (Exception $e) {
 
-            return redirect()->back()->with('error', 'diagnosticCategory Active Error ..!');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
     public function diagnostic_categorie_search(Request $request)
@@ -158,7 +158,7 @@ class DiagnosticCategoriesController extends Controller
             return redirect()->back()->with('success', ' Successfully Updated diagnostic Category !');
         } catch (Exception $e) {
 
-            return redirect()->back()->with('error', 'Diagnostic Category Updated Error ..!');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 }

@@ -46,7 +46,7 @@ class DrugsController extends Controller
             return redirect()->back()->with('success', 'Successfully Added Drug !');
         } catch (Exception $e) {
 
-            return redirect()->back()->with('error', 'Drug Inserting Error ..!');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
     public function  drugs_list()
@@ -77,7 +77,7 @@ class DrugsController extends Controller
             return redirect()->back()->with('success', 'Successfully Deleted Drug !');
         } catch (Exception $e) {
 
-            return redirect()->back()->with('error', 'drug Deleted Error ..!');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -93,7 +93,7 @@ class DrugsController extends Controller
             return redirect()->back()->with('success', 'Successfully Actived drug..!');
         } catch (Exception $e) {
 
-            return redirect()->back()->with('error', 'drug Active Error ..!');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -160,7 +160,7 @@ class DrugsController extends Controller
             return redirect()->back()->with('success', 'Successfully Updated Drug !');
         } catch (Exception $e) {
 
-            return redirect()->back()->with('error', 'Drug Updated Error ..!');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 

@@ -117,7 +117,7 @@ class AppointmentController extends Controller
             return redirect()->back()->with('success', 'Appointment Successfuly Saved ..!');
         } catch (Exception $e) {
 
-            return redirect()->back()->with('error', 'Appointment Inserting Error ..!');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -302,7 +302,7 @@ class AppointmentController extends Controller
                 ->with('success', 'Appointment Finished Successfully Updated ..!');
         } catch (Exception $e) {
 
-            return redirect()->back()->with('error', 'Appointment Finished Updated Error ..!');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 }
