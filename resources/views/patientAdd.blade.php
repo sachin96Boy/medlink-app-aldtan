@@ -7,7 +7,7 @@
             font-size: 14px;
         }
 
-       
+
         </style>
 </head>
 
@@ -16,13 +16,13 @@
     @section('content')
         <div class="container" >
             <div class="row">
-               
+
 
                 <a href="{{ route('patient_list.view') }}"> <button style="margin-left: 45px; border-radius: 30px; background-image: linear-gradient(to bottom, #7900ff, #2b8ffc);box-shadow: 1px 5px 1px rgba(0, 0, 0, 0.1);" type="button"
                         class="btn  btn-info btn-sm"><b> View Patient List</b></button></a>
-                        
-                        
-                            
+
+
+
                     <div class="col-11" style="height: 350px;margin: 10px;background-color: #c6d9e6; max-width:100%;height:auto;">
                             <form action="{{ route('patient.add') }}" method="POST" class="row g-3 needs-validation">
 
@@ -31,7 +31,7 @@
                                 <label for="validationCustom01" class="form-label lsize">Title</label>
                                 <select style="font-size: 12px;" class="form-control" id="title" name="title">
                                     @foreach ($titles as $title)
-                                        <option 
+                                        <option
                                             value="{{ $title->id }}">{{ $title->title }}</option>
                                     @endforeach
                                 </select>
@@ -42,10 +42,11 @@
                                     style=" font-size: 12px;" class="form-control" id="family_names" name="family_names"
                                     rows="4">
 
-                                                                      @foreach ($familyNames as $familyNames)
-                                        <option 
-                                            value="{{ $familyNames->family_name }}">{{ $familyNames->family_name }}</option>
-                                    @endforeach
+                                @foreach ($familyNames as $familyName => $val)
+                                <option
+                                value="{{ $familyName }}">{{ $familyName }}
+                                </option>
+                                @endforeach
 
                                 </select>
 
@@ -98,12 +99,12 @@
 
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            
 
-                                         
+
+
                                             <input style=" font-size: 12px;" class="form-check-input" type="radio"
                                                 id="female" name="gender" value="Female">
-                                        
+
                                             <label style="font-size: 12px;"class="form-check-label"
                                                 for="female">Female</label>
                                         </div>

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Patients;
 use App\Models\Appoinment;
+use App\Models\Patient;
 use App\Models\InvestigationDetails;
 use PDF;
 use Carbon\Carbon;
@@ -95,8 +96,8 @@ class AppointmentController extends Controller
             $currentDate = Carbon::today();
             $currentTime = Carbon::now();
 
-            $app_no =  Appoinment::all('appoinments_no')->where('date','=',$currentDate)->sortByDesc('appoinment_no')->first();
-
+            $app_no =  Appoinment::all('appointment_no')->where('date','=',$currentDate)->sortByDesc('appoinment_no')->first();
+            $patientName =Patients::all('name')->where('id', $id);
 
             if ($app_no !== null) {
                 $val = $app_no->appointment_no;
@@ -105,11 +106,13 @@ class AppointmentController extends Controller
                 $appointment_no = 1;
             }
 
+
             $data = [
                 'appointment_no' => $appointment_no,
                 'patient_id' => $id,
+                'patient_name' => $patientName,
                 'date' => $currentDate,
-                'appdateTime' => $currentTime,
+                'appdate_time' => $currentTime,
                 'status' => '0',
             ];
             Appoinment::create($data);
