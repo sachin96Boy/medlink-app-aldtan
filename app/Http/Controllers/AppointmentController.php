@@ -82,7 +82,7 @@ class AppointmentController extends Controller
 
             $appointment_list = Appoinment::with('patients')->select('appoinments.*', 'patients.name as patientname')->leftJoin('patients', 'appoinments.patient_id', '=', 'patients.id')->where('appoinments.date', '=', $currentDate)
                 ->where('patients.status', '=', '0')
-                //add the get function 
+                //add the get function
                 ->where('appoinments.active', '=', '0')->get();
             return view('appointmentListView', ['appointment_list' => $appointment_list]);
         } catch (Exception $e) {
@@ -106,8 +106,7 @@ class AppointmentController extends Controller
             } else {
                 $appointment_no = 1;
             }
-
-
+            
             $data = [
                 'appointment_no' => $appointment_no,
                 'patient_id' => $id,
