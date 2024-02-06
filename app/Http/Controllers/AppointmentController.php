@@ -73,6 +73,7 @@ class AppointmentController extends Controller
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
+
     public function  appointment_list()
     {
         try {
@@ -81,9 +82,8 @@ class AppointmentController extends Controller
 
             $appointment_list = Appoinment::with('patients')->select('appoinments.*', 'patients.name as patientname')->leftJoin('patients', 'appoinments.patient_id', '=', 'patients.id')->where('appoinments.date', '=', $currentDate)
                 ->where('patients.status', '=', '0')
-                ->where('appoinments.active', '=', '0');
-
-
+                //add the get function 
+                ->where('appoinments.active', '=', '0')->get();
             return view('appointmentListView', ['appointment_list' => $appointment_list]);
         } catch (Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());

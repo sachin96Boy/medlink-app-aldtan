@@ -42,12 +42,11 @@
                                     style=" font-size: 12px;" class="form-control" id="family_names" name="family_names"
                                     rows="4">
 
-                                @foreach ($familyNames as $familyName => $val)
-                                <option
-                                value="{{ $familyName }}">{{ $familyName }}
-                                </option>
-                                @endforeach
-
+                                    @foreach ($familyNames as $familyName => $val)
+                                        <option
+                                            value="{{ $familyName }}">{{ $familyName }}
+                                        </option>
+                                    @endforeach
                                 </select>
 
                             </div>
