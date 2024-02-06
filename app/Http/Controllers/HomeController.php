@@ -59,7 +59,7 @@ class HomeController extends Controller
 
             $currentDate = Carbon::today();
             $diagnostic_categories =  DiagnosticCategory::all()->where('status', '=', '0');
-            
+
             $patientDtl =  Patients::select('patients.*', 'titles.title as title')->leftJoin('titles', 'patients.title', '=', 'titles.id')->where('patients.id', '=', $id)->get();
 
             $investigationDel =  InvestigationDetails::all()->where('patient_id', '=', $id)->where('channel_date', '=', $currentDate);
@@ -69,7 +69,6 @@ class HomeController extends Controller
             $medical_tests =  medicalTests::all()->where('status', '=', '0');
 
             $names = Patients::all()->where('status', '=', '0')->pluck('name', 'id');
-
 
             $investigation_history =  investigationHistory::all()->where('patient_id', '=', $id)->where('appointment_date', '=', $currentDate);
 
