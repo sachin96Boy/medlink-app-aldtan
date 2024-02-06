@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Title;
 use App\Models\Patients;
-// use PDF;
+//use PDF;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Exception;
@@ -40,11 +40,11 @@ class PatientController extends Controller
             $titles =  Title::all();
 
             $familyNames =  Patients::all('family_name')->groupBy('family_name');
-
+            //dd($familyNames);
 
             return view('patientAdd', ['titles' => $titles], ['familyNames' => $familyNames]);
-        } catch (Exception $e) {
-            return response()->json([
+            } catch (Exception $e) {
+                return response()->json([
                 'error' => $e->getMessage()
             ]);
         }
@@ -53,7 +53,7 @@ class PatientController extends Controller
     public function add(Request $request)
     {
         try {
-            
+
             $data = [
                 'title' => $request->title,
                 'family_name' => $request->family_name,
@@ -203,11 +203,11 @@ class PatientController extends Controller
         try {
 
             $titles =  Title::all();
-
+//
             $famname =  Patients::all()->groupBy('family_name');
 
-            $patients =  Patients::with('title')->select('patients.*', 'titles.id as title')->join('titles', 'patients.title', '=', 'titles.id')->where('patients.id', $id)->first();
-
+            $patients =  Patients::with('title')->select('patients.*', 'titles.id as title')->join('titles', 'patients.title', '=', 'titles.id')->where('patients.id', $id)->get();
+//dd($patients );
             return view('patientEditViewTable', ['titles' => $titles, 'patients' => $patients, 'famname' => $famname]);
         } catch (Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
@@ -215,7 +215,6 @@ class PatientController extends Controller
     }
 
     public function update(Request $request)
-
 
     {
         try {
@@ -252,12 +251,10 @@ class PatientController extends Controller
         try {
             $Patients = Patients::find($request->id);
             $Patients->status = '1';
-
             $Patients->save();
             session()->flash('message', 'Successfully Deleted Patient !');
             return redirect()->back()->with('success', ' Successfully Deleted Patient !');
         } catch (Exception $e) {
-
             return redirect()->back()->with('error', $e->getMessage());
         }
     }

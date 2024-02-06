@@ -12,13 +12,12 @@
     @section('content')
         <div class="container">
             <div class="row text-center">
-               
                 {{-- <a href="{{ route('appointment_addview') }}"><button
                         style="margin-left: 45px; border-radius: 30px; background-image: linear-gradient(to bottom, #7900ff, #2b8ffc);box-shadow: 1px 5px 1px rgba(0, 0, 0, 0.1);"
                         type="button" class="btn  btn-info btn-sm"><b> Add Appointment</b></button></a> --}}
                 <center>
                     <h5 >Appointment List</h5>
-                </center > 
+                </center >
                 <div class="col-12 overflow-y-scroll" style="height: 50vh;">
                     <div class="card-body">
                         <table id="example1" class="table table-bordered">
@@ -40,13 +39,13 @@
                                             Active
                                             <?php  }else { ?>
                                             Finished
-                                            <?php   } ?></td>
+                                            <?php   } ?>
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
                     </div>
-
                 </div>
             </div>
         </div>

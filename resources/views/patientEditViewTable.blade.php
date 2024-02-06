@@ -76,15 +76,12 @@
     @section('content')
         <div class="container" style="margin-left: 180px;">
             <div class="row">
-                
-                
-               
-                @foreach ($patients as $patient)
-                    <a href="{{ route('patient_list.view') }}"> <button
-                            style="margin-left: 45px; border-radius: 30px; background-image: linear-gradient(to bottom, #7900ff, #2b8ffc);box-shadow: 1px 5px 1px rgba(0, 0, 0, 0.1);"
-                            type="button" class="btn  btn-info btn-sm"><b> Back to List</b></button></a>
-                            
 
+                @foreach ($patients as $patient)
+
+                    <a href="{{ route('patient_list.view') }}"> <button
+                        style="margin-left: 45px; border-radius: 30px; background-image: linear-gradient(to bottom, #7900ff, #2b8ffc);box-shadow: 1px 5px 1px rgba(0, 0, 0, 0.1);"
+                        type="button" class="btn  btn-info btn-sm"><b> Back to List</b></button></a>
                     <div class="col-12" style="height: 400px;background-color: #c6d9e6;">
                         <form action="{{ route('patientupdate', $patient->id) }}" class="row g-3 needs-validation"
                             method="POST">
@@ -93,8 +90,10 @@
                                 <label for="validationCustom01" class="form-label lsize">Title</label>
                                 <select style="font-size: 12px;" class="form-control" id="title" name="title">
                                     @foreach ($titles as $title)
-                                        <option {{ $patient->title == $title->id ? 'selected' : '' }}
-                                            value="{{ $title->id }}">{{ $title->title }}</option>
+                                        <option
+                                            {{ $patient->title == $title->id ? 'selected' : '' }}
+                                            value="{{ $title->id }}">{{ $title->title }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -103,9 +102,9 @@
                                 <select style=" font-size: 12px; background-color: #dbe9ee;" onchange="familyName()"
                                     style=" font-size: 12px;" class="form-control" id="family_names" name="family_names"
                                     rows="4">
-                                    @foreach ($famname as $famnam)
-                                        <option {{ $patient->family_name == $famnam->family_name ? 'selected' : '' }}
-                                            value="{{ $famnam->family_name }}">{{ $famnam->family_name }}</option>
+                                    @foreach ($famname as $famnam => $val)
+                                        <option {{ $patient->family_name == $famnam ? 'selected' : '' }}
+                                            value="{{ $famnam }}">{{ $famnam }}</option>
                                     @endforeach
                                 </select>
 
@@ -156,7 +155,6 @@
                                             <?php } ?>
                                             <label style="font-size: 12px;"class="form-check-label"
                                                 for="male">Male</label>
-
 
                                         </div>
                                         <div class="form-check form-check-inline">

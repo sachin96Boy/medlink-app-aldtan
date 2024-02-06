@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Patients;
 use App\Models\Appoinment;
+use App\Models\Patient;
 use App\Models\InvestigationDetails;
 use PDF;
 use Carbon\Carbon;
@@ -59,7 +60,8 @@ class AppointmentController extends Controller
             ->leftjoin('titles', 'patients.title', '=', 'titles.id')
             ->where('patients.id', '=', $id)
             ->get();
-        $pdf = Pdf::loadView('test2', ['treatment' => $treatment, 'comment' => $comment, 'investigation' => $investigation, 'patients' => $patients, 'tableData' => $tableData, 'tableoutData' => $tableoutData, 'tableMedical' => $tableMedical, 'tableInvesti' => $tableInvesti]);
+        $pdf = Pdf::loadView('test2', ['treatment' => $treatment, 'comment' => $comment, 'investigation' => $investigation,
+        'patients' => $patients, 'tableData' => $tableData, 'tableoutData' => $tableoutData, 'tableMedical' => $tableMedical, 'tableInvesti' => $tableInvesti]);
         return $pdf->stream();
     }
     public function history($id)
@@ -71,6 +73,7 @@ class AppointmentController extends Controller
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
+
     public function  appointment_list()
     {
         try {
@@ -79,9 +82,8 @@ class AppointmentController extends Controller
 
             $appointment_list = Appoinment::with('patients')->select('appoinments.*', 'patients.name as patientname')->leftJoin('patients', 'appoinments.patient_id', '=', 'patients.id')->where('appoinments.date', '=', $currentDate)
                 ->where('patients.status', '=', '0')
-                ->where('appoinments.active', '=', '0');
-
-
+                //add the get function 
+                ->where('appoinments.active', '=', '0')->get();
             return view('appointmentListView', ['appointment_list' => $appointment_list]);
         } catch (Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
@@ -95,8 +97,8 @@ class AppointmentController extends Controller
             $currentDate = Carbon::today();
             $currentTime = Carbon::now();
 
-            $app_no =  Appoinment::all('appoinments_no')->where('date','=',$currentDate)->sortByDesc('appoinment_no')->first();
-
+            $app_no =  Appoinment::all('appointment_no')->where('date','=',$currentDate)->sortByDesc('appoinment_no')->first();
+            $patientName =Patients::all('name')->where('id', $id);
 
             if ($app_no !== null) {
                 $val = $app_no->appointment_no;
@@ -105,11 +107,13 @@ class AppointmentController extends Controller
                 $appointment_no = 1;
             }
 
+
             $data = [
                 'appointment_no' => $appointment_no,
                 'patient_id' => $id,
+                'patient_name' => $patientName,
                 'date' => $currentDate,
-                'appdateTime' => $currentTime,
+                'appdate_time' => $currentTime,
                 'status' => '0',
             ];
             Appoinment::create($data);
