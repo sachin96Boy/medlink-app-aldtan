@@ -168,9 +168,9 @@ class DrugsController extends Controller
     {
         try {
 
-            $drug_history = reccomandedOpdDrugs::all('drug', 'dose', 'period', 'appointment_date')->where('patient_id', '=', $id);
+            $drug_history = reccomandedOpdDrugs::all('drug', 'dose', 'period', 'appoinment_date')->where('patient_id', '=', $id);
 
-            $drug_out = reccomandOutsideDrugs::all('drug', 'dose', 'period', 'appointment_date')->where('patient_id', '=', $id);
+            $drug_out = reccomandOutsideDrugs::all('drug', 'dose', 'period', 'appoinment_date')->where('patient_id', '=', $id);
 
             $patients =  Patients::all()->where('id', '=', $id);
             return view('drug_history', ['drug_history' => $drug_history, 'drug_out' => $drug_out, 'patients' => $patients]);
