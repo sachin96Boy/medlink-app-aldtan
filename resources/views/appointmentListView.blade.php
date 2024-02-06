@@ -30,7 +30,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($appointment_list as $appointment => $val)
+                                @foreach ($appointment_list as $appointment )
                                     <tr style="font-size: 13px;">
                                         <td>{{ $appointment->appointment_no }}</td>
                                         <td>{{ $appointment->date }}</td>
