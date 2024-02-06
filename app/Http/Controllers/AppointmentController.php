@@ -60,7 +60,8 @@ class AppointmentController extends Controller
             ->leftjoin('titles', 'patients.title', '=', 'titles.id')
             ->where('patients.id', '=', $id)
             ->get();
-        $pdf = Pdf::loadView('test2', ['treatment' => $treatment, 'comment' => $comment, 'investigation' => $investigation, 'patients' => $patients, 'tableData' => $tableData, 'tableoutData' => $tableoutData, 'tableMedical' => $tableMedical, 'tableInvesti' => $tableInvesti]);
+        $pdf = Pdf::loadView('test2', ['treatment' => $treatment, 'comment' => $comment, 'investigation' => $investigation,
+        'patients' => $patients, 'tableData' => $tableData, 'tableoutData' => $tableoutData, 'tableMedical' => $tableMedical, 'tableInvesti' => $tableInvesti]);
         return $pdf->stream();
     }
     public function history($id)
