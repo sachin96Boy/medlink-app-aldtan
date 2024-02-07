@@ -133,7 +133,7 @@ class AppointmentController extends Controller
             ->where('appoinments.status', '=', "0")
             ->where('appoinments.date', '=', $currentDate)
             ->where('patients.status', '=', '0')
-            ->where('appoinments.active', '=', '0');
+            ->where('appoinments.active', '=', '0')->get();
 
             return view('appointmentWaitingList', ['waiting_list' => $waiting_list]);
         } catch (Exception $e) {
