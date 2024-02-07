@@ -9,6 +9,7 @@ use App\Models\Drugs;
 use App\Models\Patients;
 use App\Models\reccomandedOpdDrugs;
 use Exception;
+use Illuminate\Support\Facades\Validator;
 
 class DrugsController extends Controller
 {
@@ -35,17 +36,34 @@ class DrugsController extends Controller
 
     public function add(Request $request)
     {
-
         try {
+            $validator = Validator::make($request->all(), [
+                'drug_name' => 'required',
+            ]);
+
+            if ($validator->fails()) {
+                return redirect()->back()->with('error','something error');
+            }
+
+            $drugName = $request->input('drug_name');
+
+            $drugId = Drugs::where('drug_name', $drugName)->count();
+
+            if ($drugId > 0) {
+                return redirect()->back()->with('error', 'This Drug Name already available');
+            }
+
             $data = [
-                'drug_name' => $request->drug_name
+                'drug_name' => strtoupper($drugName),
             ];
+
             Drugs::create($data);
+            //dd($data);
 
             session()->flash('message', 'Successfully Added Drug !');
             return redirect()->back()->with('success', 'Successfully Added Drug !');
-        } catch (Exception $e) {
 
+        } catch (Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
@@ -80,6 +98,7 @@ class DrugsController extends Controller
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
+
 
     public function active(Request $request)
     {
@@ -117,7 +136,6 @@ class DrugsController extends Controller
                 ->orderBy('drugs.drug_name', 'asc')
                 ->where('drugs.status', '=', "0")
                 ->get();
-
 
             $drugs_list_deleted =  DB::table('drugs')
                 ->select('drugs.*')
