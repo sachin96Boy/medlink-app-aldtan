@@ -135,6 +135,7 @@ class AppointmentController extends Controller
             ->where('patients.status', '=', '0')
             ->where('appoinments.active', '=', '0')->get();
 
+            
             return view('appointmentWaitingList', ['waiting_list' => $waiting_list]);
         } catch (Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
