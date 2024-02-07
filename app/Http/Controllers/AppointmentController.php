@@ -97,7 +97,6 @@ class AppointmentController extends Controller
         $currentTime = Carbon::now();
 
         $app_no = Appoinment::all()->where('date','=',$currentDate)->last();
-        //$app_no = Appoinment::where('date', $currentDate)->where('id', $id)->first();
         $patient = Patients::find($id);
 
         if ($app_no !== null) {
@@ -144,7 +143,6 @@ class AppointmentController extends Controller
 
     public function cancel($id)
     {
-
         try {
             $currentDate = Carbon::today();
             DB::table('appoinments')
