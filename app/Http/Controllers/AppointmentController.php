@@ -91,38 +91,40 @@ class AppointmentController extends Controller
     }
 
     public function add($id)
-    {
+{
+    try {
+        $currentDate = Carbon::today();
+        $currentTime = Carbon::now();
 
-        try {
-            $currentDate = Carbon::today();
-            $currentTime = Carbon::now();
+        $app_no = Appoinment::all()->where('date','=',$currentDate)->last();
+        //$app_no = Appoinment::where('date', $currentDate)->where('id', $id)->first();
+        //dd($app_no);
 
-            $app_no =  Appoinment::all('appointment_no')->where('date','=',$currentDate)->sortByDesc('appoinment_no')->first();
-            $patientName =Patients::all('name')->where('id', $id);
+        $patient = Patients::find($id);
+        //dd($patient);
 
-            if ($app_no !== null) {
-                $val = $app_no->appointment_no;
-                $appointment_no = $val + 1;
-            } else {
-                $appointment_no = 1;
-            }
-            
-            $data = [
-                'appointment_no' => $appointment_no,
-                'patient_id' => $id,
-                'patient_name' => $patientName,
-                'date' => $currentDate,
-                'appdate_time' => $currentTime,
-                'status' => '0',
-            ];
-            Appoinment::create($data);
-            session()->flash('message', 'Appointment Successfully Saved ..!');
-            return redirect()->back()->with('success', 'Appointment Successfuly Saved ..!');
-        } catch (Exception $e) {
-
-            return redirect()->back()->with('error', $e->getMessage());
+        if ($app_no !== null) {
+            $appointment_no = $app_no->appointment_no + 1;
+        } else {
+            $appointment_no = 1;
         }
+
+        $data = [
+            'appointment_no' => $appointment_no,
+            'patient_id' => $id,
+            'patient_name' => $patient->name, // Extracting name from the patient object
+            'date' => $currentDate,
+            'appdate_time' => $currentTime,
+            'status' => '0',
+        ];
+
+        Appoinment::create($data);
+        session()->flash('message', 'Appointment Successfully Saved ..!');
+        return redirect()->back()->with('success', 'Appointment Successfully Saved ..!');
+    } catch (Exception $e) {
+        return redirect()->back()->with('error', $e->getMessage());
     }
+}
 
     public function  waitingList()
     {
