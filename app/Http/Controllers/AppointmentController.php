@@ -98,10 +98,7 @@ class AppointmentController extends Controller
 
         $app_no = Appoinment::all()->where('date','=',$currentDate)->last();
         //$app_no = Appoinment::where('date', $currentDate)->where('id', $id)->first();
-        //dd($app_no);
-
         $patient = Patients::find($id);
-        //dd($patient);
 
         if ($app_no !== null) {
             $appointment_no = $app_no->appointment_no + 1;
