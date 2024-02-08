@@ -97,7 +97,6 @@ class AppointmentController extends Controller
         $currentTime = Carbon::now();
 
         $app_no = Appoinment::all()->where('date','=',$currentDate)->last();
-        //$app_no = Appoinment::where('date', $currentDate)->where('id', $id)->first();
         $patient = Patients::find($id);
 
         if ($app_no !== null) {
@@ -134,8 +133,9 @@ class AppointmentController extends Controller
             ->where('appoinments.status', '=', "0")
             ->where('appoinments.date', '=', $currentDate)
             ->where('patients.status', '=', '0')
-            ->where('appoinments.active', '=', '0');
+            ->where('appoinments.active', '=', '0')->get();
 
+            
             return view('appointmentWaitingList', ['waiting_list' => $waiting_list]);
         } catch (Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
@@ -144,7 +144,6 @@ class AppointmentController extends Controller
 
     public function cancel($id)
     {
-
         try {
             $currentDate = Carbon::today();
             DB::table('appoinments')
