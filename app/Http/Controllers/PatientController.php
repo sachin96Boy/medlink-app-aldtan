@@ -205,7 +205,7 @@ class PatientController extends Controller
 
             $famname =  Patients::all()->groupBy('family_name');
 
-            $patients =  Patients::with('title')->select('patients.*', 'titles.id as title')->join('titles', 'patients.title', '=', 'titles.id')->where('patients.id','=', $id)->get();
+            $patients =  Patients::with('title')->select('patients.*', 'titles.id as title')->join('titles', 'patients.title', '=', 'titles.id')->where('patients.id', '=', $id)->get();
 
             return view('patientEditViewTable', ['titles' => $titles, 'patients' => $patients, 'famname' => $famname]);
         } catch (Exception $e) {
@@ -319,7 +319,7 @@ class PatientController extends Controller
             $numberOfDays = $date1->diffInDays($date2);
             $formatteddate1 = $date1->format('Y-m-d');
             $formatteddate2 = $date2->format('Y-m-d');
-            $patients =  Patients::all()->where('id', '=', $id)->get();
+            $patients =  Patients::all()->where('id', '=', $id);
 
             $pdf = Pdf::loadView('medical2', ['patients' => $patients, 'address1' => $address1, 'address2' => $address2, 'address3' => $address3, 'treatmentrep' => $treatmentrep, 'amountrep' => $amountrep, 'date1' => $formatteddate1, 'date2' => $formatteddate2, 'numberOfDays' => $numberOfDays]);
             return $pdf->stream();

@@ -8,7 +8,8 @@ use App\Models\Patients;
 use App\Models\Appoinment;
 use App\Models\Patient;
 use App\Models\InvestigationDetails;
-use PDF;
+// use PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Exception;
 
