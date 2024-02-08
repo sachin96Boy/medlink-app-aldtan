@@ -40,11 +40,11 @@ class PatientController extends Controller
             $titles =  Title::all();
 
             $familyNames =  Patients::all('family_name')->groupBy('family_name');
-            //dd($familyNames);
+
 
             return view('patientAdd', ['titles' => $titles], ['familyNames' => $familyNames]);
-            } catch (Exception $e) {
-                return response()->json([
+        } catch (Exception $e) {
+            return response()->json([
                 'error' => $e->getMessage()
             ]);
         }
@@ -127,7 +127,6 @@ class PatientController extends Controller
     }
 
 
-
     public function patient_list_view()
     {
 
@@ -203,11 +202,11 @@ class PatientController extends Controller
         try {
 
             $titles =  Title::all();
-//
+
             $famname =  Patients::all()->groupBy('family_name');
 
             $patients =  Patients::with('title')->select('patients.*', 'titles.id as title')->join('titles', 'patients.title', '=', 'titles.id')->where('patients.id', $id)->get();
-//dd($patients );
+
             return view('patientEditViewTable', ['titles' => $titles, 'patients' => $patients, 'famname' => $famname]);
         } catch (Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
@@ -296,8 +295,6 @@ class PatientController extends Controller
         }
     }
 
-
-
     public function investigation_history($id)
     {
         try {
@@ -308,6 +305,101 @@ class PatientController extends Controller
         } catch (Exception $e) {
             return response()->json([
                 'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function medical_certificate($id, $address1, $address2, $address3, $treatmentrep, $amountrep, $date1, $date2)
+    {
+
+        try {
+            $date1 = Carbon::parse($date1);
+            $date2 = Carbon::parse($date2);
+
+            $numberOfDays = $date1->diffInDays($date2);
+            $formatteddate1 = $date1->format('Y-m-d');
+            $formatteddate2 = $date2->format('Y-m-d');
+            $patients =  Patients::all()->where('id', '=', $id)->get();
+
+            $pdf = Pdf::loadView('medical2', ['patients' => $patients, 'address1' => $address1, 'address2' => $address2, 'address3' => $address3, 'treatmentrep' => $treatmentrep, 'amountrep' => $amountrep, 'date1' => $formatteddate1, 'date2' => $formatteddate2, 'numberOfDays' => $numberOfDays]);
+            return $pdf->stream();
+        } catch (Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+    public function medical_certificate2($id, $address1, $address2, $address3, $treatmentrep, $amountrep, $date1, $date2)
+    {
+        try {
+            $date1 = Carbon::parse($date1);
+            $date2 = Carbon::parse($date2);
+            $numberOfDays = $date1->diffInDays($date2);
+
+            $formatteddate1 = $date1->format('Y-m-d');
+            $formatteddate2 = $date2->format('Y-m-d');
+
+            $patients =  Patients::all()->where('id', '=', $id);
+
+            $pdf = Pdf::loadView('medical', ['patients' => $patients, 'address1' => $address1, 'address2' => $address2, 'address3' => $address3, 'treatmentrep' => $treatmentrep, 'amountrep' => $amountrep, 'date1' => $formatteddate1, 'date2' => $formatteddate2, 'numberOfDays' => $numberOfDays]);
+            $pdf->setPaper('a5');
+
+            return $pdf->stream();
+        } catch (Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+    public function medical_test_report(Request $request)
+    {
+
+        try {
+
+            $tableMedical = json_decode($request->input('tableMedical'), true);
+
+
+            $id = $request->input('uid');
+            $patients =  Patients::with('titles')->select('patients.*', 'titles.id as title')
+                ->leftjoin('titles', 'patients.title', '=', 'titles.id')
+                ->where('patients.id', '=', $id)
+                ->get();
+
+            $pdf = Pdf::loadView('medical_test_report', ['tableMedical' => $tableMedical, 'patients' => $patients]);
+            return $pdf->stream();
+        } catch (Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+    public function opd_report(Request $request)
+    {
+        try {
+            $id = $request->input('uid');
+
+            $currentDate = Carbon::today();
+
+            $appId = Appoinment::all()
+                ->where('patient_id', $id)
+                ->where('date', $currentDate);
+
+
+
+            $tableData = json_decode($request->input('tableData'), true);
+            $amount = json_decode($request->input('amount'), true);
+
+            $patients =  Patients::with('titles')
+                ->select('patients.*', 'titles.id as title')
+                ->leftjoin('titles', 'patients.title', '=', 'titles.id')
+                ->where('patients.id', '=', $id)
+                ->get();
+
+            $pdf = Pdf::loadView('opd_report', ['opdReport1' => $tableData, 'patients' => $patients, 'amount' => $amount, 'appoi' => $appId]);
+            return $pdf->stream();
+        } catch (Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
             ]);
         }
     }
