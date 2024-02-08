@@ -256,14 +256,29 @@ $appointmentUpdateQuery = "UPDATE appoinments SET patient_id = $oldUserId WHERE 
 if ($conn->query($appointmentUpdateQuery) === TRUE) {
     ?>
 <script>
-    alert("User ID updated successfully")
+    silverBox({
+        title: {
+            text: "Success",
+            alertIcon: "success"
+        },
+        text: "User ID updated successfully",
+        theme: 'dark'
+    })
     window.location.href = "https://medlink.aldtan.xyz/home"
 </script>
 <?php
 } else {
 ?>
 <script>
-    alert("error user update")
+    silverBox({
+        alertIcon: "error",
+        text: "error user update",
+        centerContent: true,
+        cancelButton: {
+            text: "OK"
+        },
+        theme: 'dark'
+    })
 </script>
 <?php
 }
@@ -318,7 +333,7 @@ $conn->close();
                                 <div
                                     class="d-flex gap-2 flex-column flex-md-row align-items-center justify-content-between">
                                     <!--Patient name and Family name-->
-                                    <div class="d-flex flex-column flex-lg-row gap-2 align-items-cente">
+                                    <div class="d-flex flex-column flex-lg-row gap-2 align-items-center">
                                         <i class="fa fa-user-o mt-2" style="font-size:16px;"></i>patient
                                         <b>{{ $p->name }}</b>
                                         <button type="button"
@@ -524,15 +539,27 @@ $conn->close();
                                     <!-- Patient Details-->
                                     <div class="container  p-lg-2" style="background-color:#d8ebd5;border-radius:10px;">
                                         <div class="d-flex align-items-center">
-                                            <div class="col-3">
-                                                <p style="font-size: 12px;"><b>Age:</b> {{ $p->age }}</p>
-                                                <p style="font-size: 12px;"><b>Weight:</b> {{ $p->weight }}</p>
-                                                <p style="font-size: 12px;"><b>Allergies:</b></p>
-                                            </div>
-                                            <div class="col-7">
-                                                <p style="font-size: 12px;"><b>Gender:</b> {{ $p->gender }}</p>
-                                                <p style="font-size: 12px;"><b>Address:</b> {{ $p->address }}</p>
-                                            </div>
+                                            <table style="width: 100%;font-size: 12px;">
+                                                <tbody>
+                                                    <tr>
+                                                        <td style="width: 10%;">Age</td>
+                                                        <td style="width:20%;">: {{ $p->age }}</td>
+                                                        <td style="width: 10%;">Gender</td>
+                                                        <td style="width: 40%;">: {{ $p->gender }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Weight</td>
+                                                        <td>: {{ $p->weight }}</td>
+                                                        <td>Allergies</td>
+                                                        <td>: </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td> Address</td>
+                                                        <td colspan="3">: {{ $p->address }}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+
                                             <div class="col-lg-2">
                                                 <a href="{{ route('patienteditview', ['id' => $p->id]) }}"> <button
                                                         type="button" class="btn btn-primary btn-sm"
@@ -548,18 +575,25 @@ $conn->close();
                                         <p><b>Last Visit Sumary </b></p>
 
                                         <div style="font-size: 12px;">
-                                            <table scope="col">
-                                                <tr>
-                                                    <td>medicalTest :</td>
-                                                    <td>Treatment :</td>
-                                                    <td>Investigation Name :</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Last Visit Date :</td>
-                                                    <td>comment :</td>
-                                                </tr>
-                                                <tr>
-                                                </tr>
+                                            <table style="width: 100%;font-size: 12px;">
+                                                <tbody>
+                                                    <tr>
+                                                        <td style="width: 20%;">Medical Test </td>
+                                                        <td style="width: 10%;">:</td>
+                                                        <td style="width: 10%;">Treatment </td>
+                                                        <td style="width: 10%;">:</td>
+                                                        <td style="width: 20%;">Investigation Name</td>
+                                                        <td style="width: 10%;">:</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Last Visit Date</td>
+                                                        <td>:</td>
+                                                        <td>comment</td>
+                                                        <td colspan="3">:</td>
+                                                    </tr>
+                                                    <tr>
+                                                    </tr>
+                                                </tbody>
                                             </table>
                                         </div>
 
@@ -762,14 +796,19 @@ $conn->close();
                                                                             </th>
                                                                             <th style="width: 10%;">Dose</th>
                                                                             <th style="width: 10%;">Period</th>
+                                                                            <th style="width: 10%;">Terms</th>
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody style="font-size:13px; line height:1.4px;">
                                                                         @foreach ($reccomanded_opd_drugs as $opddrugs)
                                                                             <tr>
                                                                                 <td>{{ $opddrugs->drug }}</td>
-                                                                                <td>{{ $opddrugs->dose }}</td>
-                                                                                <td>{{ $opddrugs->period }}</td>
+                                                                                <td name="opddose[]">{{ $opddrugs->dose }}
+                                                                                </td>
+                                                                                <td name="opdperiod[]">
+                                                                                    {{ $opddrugs->period }}</td>
+                                                                                <td name="terms[]">{{ $opddrugs->terms }}
+                                                                                </td>
                                                                             </tr>
                                                                         @endforeach
                                                                     </tbody>
@@ -817,6 +856,7 @@ $conn->close();
                                                                             </th>
                                                                             <th style="width: 10%;">Dose</th>
                                                                             <th style="width: 10%;">Period</th>
+                                                                            <th style="width: 10%;">Terms</th>
 
                                                                         </tr>
                                                                     </thead>
@@ -826,6 +866,8 @@ $conn->close();
                                                                                 <td>{{ $outdrugs->drug }}</td>
                                                                                 <td>{{ $outdrugs->dose }}</td>
                                                                                 <td>{{ $outdrugs->period }}</td>
+                                                                                <td name="outterms[]">
+                                                                                    {{ $outdrugs->terms }}</td>
                                                                             </tr>
                                                                         @endforeach
                                                                     </tbody>
@@ -908,6 +950,73 @@ $conn->close();
                                                         class="btn  btn-primary " onclick="postData()">Print
                                                         Report</button>
                                                 </div>
+                                                <!-- The Modal -->
+                                                <div id="myModal" class="modal">
+
+                                                    <!-- Modal content -->
+                                                    <div class="modal-content">
+                                                        <span class="close" id="close">&times;</span>
+                                                        <div class="col">
+                                                            <div class="row">
+                                                                <button type="button"
+                                                                    style="background-color:#4DFF98;width: 90%; font-size:18px; color:white; border-radius: 15px; text-shadow: 2px 2px 4px #000000; padding-top: 5px; background-image: linear-gradient(to bottom, #4fdcd7, #52f3bc);"
+                                                                    class="btn btn-primary "
+                                                                    onclick="report_medical()">Print Medical
+                                                                    Report</button>
+                                                            </div>
+
+                                                            <div class="row">
+                                                                <button type="button"
+                                                                    style="background-color:#4DFF98;width: 90%; font-size:18px; color:white; border-radius: 15px; text-shadow: 2px 2px 4px #000000; padding-top: 5px; background-image: linear-gradient(to bottom, #4fdcd7, #52f3bc);"
+                                                                    class="btn btn-primary " onclick="report_out()">Print
+                                                                    Outside Drugs</button>
+                                                            </div>
+                                                            <div class="row">
+                                                                <button type="button"
+                                                                    style="background-color:#4DFF98;width: 90%; font-size:18px; color:white; border-radius: 15px; text-shadow: 2px 2px 4px #000000; padding-top: 5px; background-image: linear-gradient(to bottom, #4fdcd7, #52f3bc);"
+                                                                    class="btn btn-primary " onclick="report_opd()">Print
+                                                                    Opd Drugs</button>
+                                                            </div>
+                                                            <div class="row">
+                                                                <button type="button"
+                                                                    style="background-color:#4DFF98;width: 90%; font-size:18px; color:white; border-radius: 15px; text-shadow: 2px 2px 4px #000000; padding-top: 5px; background-image: linear-gradient(to bottom, #4fdcd7, #52f3bc);"
+                                                                    class="btn btn-primary " onclick="postData()">Print
+                                                                    All Report</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <script>
+                                                    // Get the modal
+                                                    var modal = document.getElementById("myModal");
+
+                                                    // Get the button that opens the modal
+                                                    var btn = document.getElementById("myBtn");
+
+                                                    // Get the <span> element that closes the modal
+                                                    var span = document.getElementsByClassName("close")[0];
+                                                    var close = document.getElementById("close");
+
+                                                    // When the user clicks the button, open the modal 
+                                                    btn.onclick = function() {
+                                                        modal.style.display = "block";
+                                                    }
+                                                    close.onclick = function() {
+                                                        modal.style.display = "none";
+                                                    }
+                                                    // When the user clicks on <span> (x), close the modal
+                                                    span.onclick = function() {
+                                                        modal.style.display = "none";
+                                                    }
+
+                                                    // When the user clicks anywhere outside of the modal, close it
+                                                    window.onclick = function(event) {
+                                                        if (event.target == modal) {
+                                                            modal.style.display = "none";
+                                                        }
+                                                    }
+                                                </script>
                                             </div>
                                         </div>
 
@@ -932,205 +1041,991 @@ $conn->close();
             <input type="hidden" name="tableMedical" id="tableMedical" value="">
             <input type="hidden" name="tableInvesti" id="tableInvesti" value="">
         </form>
+        <form id="postDataMedicalForm" action="{{ route('medical_repo') }}" method="POST">
+            @csrf
+            <input type="hidden" name="uid" id="uid" value="">
+
+            <input type="hidden" name="tableMedical" id="tableMedical" value="">
+
+        </form>
+        <form id="postDataopd" action="{{ route('opd_report') }}" method="POST">
+            @csrf
+            <input type="hidden" name="uid" id="uid" value="">
+            <input type="hidden" name="amount" id="amount" value="">
+            <input type="hidden" name="tableData" id="tableData" value="">
+
+        </form>
+        <form id="postDataout" action="{{ route('out_report') }}" method="POST">
+            @csrf
+            <input type="hidden" name="uid" id="uid" value="">
+
+            <input type="hidden" name="tableOutData" id="tableOutData" value="">
+
+        </form>
     @endsection
     @include('footer')
 </body>
 
 <script>
+    function option(id) {
+                silverBox({
+                    text: "Choose an option:",
+                    duration:0,
+                           showCloseButton: true,
+                    cancelButton: 
+                {
+                    text: "Option 2",
+                    duration:0,
+                    closeOnClick: false,
+                    onClick: function () {
+                        var address1 = document.getElementById('add1').value;
+                        var address2 = document.getElementById('add2').value;
+                        var address3 = document.getElementById('add3').value;
+                        var treatmentrep = document.getElementById('treatmentrep').value;
+                        var amountrep = document.getElementById('amountrep').value;
+                        var date1 = document.getElementById('date1').value;
+                        var date2 = document.getElementById('date2').value;
+    
+                        if (address1 === "" || address2 === "" || address3 === "" || treatmentrep === "" || amountrep === "" || date1 === "" || date2 === "") {
+                            alert("Please enter all values");
+                            window.location.href = "/view_patient_details/"+id;
+                        } else{
+                            window.location.href = "/medical_certificate/" + id + "/" + address1 + "/" + address2 + "/" + address3 + "/"+ treatmentrep + "/" + amountrep + "/" + date1 + "/" + date2;
+    
+                        }
+                    },
+                },
+                customButton:
+                {
+                    text: "Option 1",
+                    closeOnClick: false,
+                    showButton: true,
+                    onClick: function () {
+                        var address1 = document.getElementById('add1').value;
+                        var address2 = document.getElementById('add2').value;
+                        var address3 = document.getElementById('add3').value;
+                        var treatmentrep = document.getElementById('treatmentrep').value;
+                        var amountrep = document.getElementById('amountrep').value;
+                        var date1 = document.getElementById('date1').value;
+                        var date2 = document.getElementById('date2').value;                    
+                        if (address1 === "" || address2 === "" || address3 === "" || treatmentrep === "" || amountrep === "" || date1 === "" || date2 === "") {
+                            alert("Please enter all values");
+                            window.location.href = "/view_patient_details/"+id;
+                        } else{
+                        window.location.href = "/medical_certificate2/" + id + "/" + address1 + "/" + address2 + "/" + address3 + "/"+ treatmentrep + "/" + amountrep + "/" + date1 + "/" + date2;
+                        }
+                    },
+                },
+            
+           theme: "dark",
+           input: [
+                  {
+                         label: "Address Line 1",
+                         type: "text",
+                         placeHolder: "Enter Address Line 1",
+                         name:"add1",
+                         id:"add1",
+                         className:"add1",
+                  },
+                  {
+                         label: "Address Line 2",
+                         type: "text",
+                         placeHolder: "Enter Address Line 2",
+                         name:"add2",
+                         name:"add2",
+                         id:"add2",
+                         className:"add2"
+                  },
+                  {
+                         label: "Address Line 3",
+                         type: "text",
+                         placeHolder: "Enter Address Line 3",
+                         name:"add3",
+                         id:"add3",
+    
+                  },
+                  {
+                         label: "Treatment",
+                         type: "text",
+                         placeHolder: "Enter Treatment",
+                         name:"treatmentrep",
+                         id:"treatmentrep"
+                  },
+                  {
+                         label: "Amount",
+                         type: "text",
+                         placeHolder: "Enter Amount",
+                         name:"amountrep",
+                         id:"amountrep"
+                  },
+                  {
+                         label: "Date 1",
+                         type: "date",
+                         placeHolder: "Enter Date 1",
+                         id:"date1",
+                         name:"date1"
+                  },
+                  {
+                         label: "Date 2",
+                         type: "date",
+                         placeHolder: "Enter Date 2",
+                         name:"date2",
+                         id:"date2"
+    
+                  }
+           ]
+                });
+            }
     function submitForm(formId, event) {
-        var isConfirmed = confirm('Are you sure you want to submit the form?');
-
-        // If not confirmed, prevent form submission
-        if (!isConfirmed) {
-            event.preventDefault();
+        var tableMedical = [];
+    
+        $('#investigationTable tbody tr').each(function(index, row) {
+            var medicalTest = $(row).find('td:eq(0)').text().trim();
+    
+            var rowData = {
+                'medicalTest': medicalTest,
+            };
+    
+            tableMedical.push(rowData);
+        });
+    
+        var tableOPD = [];
+    
+        $('#faqs tbody tr').each(function(index, row) {
+            var medicalTest = $(row).find('td:eq(0)').text().trim();
+    
+            var rowData = {
+                'medicalTest': medicalTest,
+            };
+    
+            tableOPD.push(rowData);
+        });
+    
+        if (tableMedical.length <= 1) {
+            silverBox({
+                alertIcon: "error",
+                text: "Presenting Complaint is Empty",
+                centerContent: true,
+                cancelButton: {
+                    text: "OK"
+                },
+                theme: 'dark'
+            });
+        } else if (tableOPD.length <= 0) {
+            silverBox({
+                alertIcon: "error",
+                text: "OPD Drug is Empty",
+                centerContent: true,
+                cancelButton: {
+                    text: "OK"
+                },
+                theme: 'dark'
+            });
         } else {
-            document.getElementById(formId).submit();
+            const myModal = silverBox({
+                title: {
+                    text: 'Confirmation',
+                    alertIcon: 'question',
+                },
+                html: 'Are you sure you want to proceed?',
+                confirmButton: {
+                    text: 'Confirm',
+                    onClick: function () {
+                        document.getElementById(formId).submit();
+                    },
+                },
+                denyButton: {
+                    text: 'Cancel',
+                    onClick: function () {
+                        event.preventDefault();
+                    },
+                },
+                onClose: function () {
+                    event.preventDefault();
+                },
+                theme: "dark",
+            });
         }
     }
-
-    document.getElementById('form1').addEventListener('keydown', function(e) {
+    
+    
+    document.getElementById('form1').addEventListener('keydown', function (e) {
         if (e.key === 'Enter') {
             e.preventDefault();
         }
     });
-
-
-    function investihandleKeyPress(event) {
-
-        if (event.key === 'Enter') {
-            addtableInvesti();
+    
+    
+        function investihandleKeyPress(event) {
+            
+            if (event.key === 'Enter') {
+                addtableInvesti();
+            }
         }
-    }
-
-    function meditesthandleKeyPress(event) {
-
-        if (event.key === 'Enter') {
-            addtableMedicaltest();
+            function meditesthandleKeyPress(event) {
+            
+            if (event.key === 'Enter') {
+                addtableMedicaltest();
+            }
         }
-    }
-
-    function opdhandleKeyPress(event) {
-
-        if (event.key === 'Enter') {
-            addtableopd();
+        function opdhandleKeyPress(event) {
+            
+            if (event.key === 'Enter') {
+                addtableopd();
+            }
         }
-    }
-
-    function outhandleKeyPress(event) {
-
-        if (event.key === 'Enter') {
-            addtableout();
+        function outhandleKeyPress(event) {
+            
+            if (event.key === 'Enter') {
+                addtableout();
+            }
         }
-    }
-
-
-    function validateForm() {
-        var selectedValue = document.getElementById("name").value;
-        if (selectedValue === "") {
-            alert("Please select a value");
-            return false;
+    
+    
+        function validateForm() {
+            var selectedValue = document.getElementById("name").value;
+            if (selectedValue === "") {
+                silverBox({
+                    alertIcon: "error",
+                    text: "Please select a value",
+                    centerContent: true,
+                    cancelButton: {
+                            text: "OK"
+                    },
+                    theme:'dark'
+                })
+                return false;
+            }
+            return true;
         }
-        return true;
-    }
-</script>
-<script>
-    $(function() {
-        $("#next_visit_date").datepicker({
-            format: 'yy-mm-dd'
+    </script>
+    <script>
+        $(function() {
+            $("#next_visit_date").datepicker({
+                format: 'yy-mm-dd'
+            });
         });
-    });
-</script>
-
-<script>
-    // This Function use to print report function add insert data to PostdataForm and pass that data to dom pdf page
-    function postData() {
-        var tableData = [];
+    </script>
+    
+    <script>
+        // This Function use to print report function add insert data to PostdataForm and pass that data to dom pdf page
+        function postData() {
+            var tableData = [];
+            var tableOutData = [];
+            var tableMedical = [];
+            var tableInvesti = [];
+    
+    
+            $('#faqs tbody tr').each(function(index, row) {
+                var drugName = $(row).find('td:eq(0)').text().trim();
+                var dose = $(row).find('td:eq(1) input').val();
+                var period = $(row).find('td:eq(2) input').val();
+                var terms = $(row).find('td:eq(3) input').val();
+    
+                dose = dose ? dose.trim() : '';
+                period = period ? period.trim() : '';
+                terms = terms ? terms.trim() : '';
+                var rowData = {
+                    'drugName': drugName,
+                    'dose': dose,
+                    'period': period,
+                    'terms': terms
+                };
+    
+                tableData.push(rowData);
+            });
+            $('#table2 tbody tr').each(function(index, row) {
+                var drugName = $(row).find('td:eq(0)').text().trim();
+                var dose = $(row).find('td:eq(1) input').val();
+                var period = $(row).find('td:eq(2) input').val();
+    var terms = $(row).find('td:eq(3) select').val();
+    
+    
+                dose = dose ? dose.trim() : '';
+                period = period ? period.trim() : '';
+                            terms = terms ? terms.trim() : '';
+    
+                var rowData = {
+                    'drugName': drugName,
+                    'dose': dose,
+                    'period': period,
+                    'terms': terms
+                };
+    
+                tableOutData.push(rowData);
+            });
+    
+            $('#listView tbody tr').each(function(index, row) {
+                var medicalTest = $(row).find('td:eq(0)').text().trim();
+    
+                var rowData = {
+                    'medicalTest': medicalTest,
+                };
+    
+                tableMedical.push(rowData);
+            });
+            $('#investigationTable tbody tr').each(function(index, row) {
+                var investigation = $(row).find('td:eq(0)').text().trim();
+    
+                var rowData = {
+                    'investigation': investigation,
+                };
+    
+                tableInvesti.push(rowData);
+            });
+    
+            var form = document.getElementById('postDataForm');
+            form.elements['uid'].value = document.getElementById('user_id').value;
+            form.elements['comment'].value = document.getElementById('comment').value;
+            form.elements['treatment'].value = document.getElementById('treatment').value;
+            form.elements['investigation'].value = document.getElementById('investigation_details').value;
+    
+    
+            form.elements['tableData'].value = JSON.stringify(tableData);
+            form.elements['tableOutData'].value = JSON.stringify(tableOutData);
+            form.elements['tableMedical'].value = JSON.stringify(tableMedical);
+            form.elements['tableInvesti'].value = JSON.stringify(tableInvesti);
+    
+    
+            form.submit();
+        }
+            function report_medical() {
+    
+            var tableMedical = [];
+    
+    
+            $('#listView tbody tr').each(function(index, row) {
+                var medicalTest = $(row).find('td:eq(0)').text().trim();
+    
+                var rowData = {
+                    'medicalTest': medicalTest,
+                };
+    
+                tableMedical.push(rowData);
+            });
+    
+            var form = document.getElementById('postDataMedicalForm');
+    
+            form.elements['tableMedical'].value = JSON.stringify(tableMedical);
+            form.elements['uid'].value = document.getElementById('user_id').value;
+    
+    
+    
+            form.submit();
+        }
+        function report_opd() {
+    
+            var tableData = [];
+    
+    
+            $('#faqs tbody tr').each(function(index, row) {
+                var drugName = $(row).find('td:eq(0)').text().trim();
+                var dose = $(row).find('td:eq(1) input').val();
+                var period = $(row).find('td:eq(2) input').val();
+    var terms = $(row).find('td:eq(3) select').val();
+    
+                dose = dose ? dose.trim() : '';
+                period = period ? period.trim() : '';
+                terms = terms ? terms.trim() : '';
+    
+                var rowData = {
+                    'drugName': drugName,
+                    'dose': dose,
+                    'period': period,
+                    'terms': terms
+    
+                };
+    
+                tableData.push(rowData);
+            });
+    
+    var form = document.getElementById('postDataopd');
+    form.elements['uid'].value = document.getElementById('user_id').value;
+    form.elements['amount'].value = document.getElementById('amount').value;
+    form.elements['tableData'].value = JSON.stringify(tableData);
+    
+    
+    
+    form.submit();
+    }
+    function report_out() {
+    
         var tableOutData = [];
-        var tableMedical = [];
-        var tableInvesti = [];
-
-
-        $('#faqs tbody tr').each(function(index, row) {
-            var drugName = $(row).find('td:eq(0)').text().trim();
-            var dose = $(row).find('td:eq(1) input').val();
-            var period = $(row).find('td:eq(2) input').val();
-
-            dose = dose ? dose.trim() : '';
-            period = period ? period.trim() : '';
-            var rowData = {
-                'drugName': drugName,
-                'dose': dose,
-                'period': period
-            };
-
-            tableData.push(rowData);
-        });
+    
+    
         $('#table2 tbody tr').each(function(index, row) {
-            var drugName = $(row).find('td:eq(0)').text().trim();
-            var dose = $(row).find('td:eq(1) input').val();
-            var period = $(row).find('td:eq(2) input').val();
-
-
-            dose = dose ? dose.trim() : '';
-            period = period ? period.trim() : '';
-            var rowData = {
-                'drugName': drugName,
-                'dose': dose,
-                'period': period
-            };
-
-            tableOutData.push(rowData);
-        });
-
-        $('#listView tbody tr').each(function(index, row) {
-            var medicalTest = $(row).find('td:eq(0)').text().trim();
-
-            var rowData = {
-                'medicalTest': medicalTest,
-            };
-
-            tableMedical.push(rowData);
-        });
-        $('#investigationTable tbody tr').each(function(index, row) {
-            var investigation = $(row).find('td:eq(0)').text().trim();
-
-            var rowData = {
-                'investigation': investigation,
-            };
-
-            tableInvesti.push(rowData);
-        });
-
-        var form = document.getElementById('postDataForm');
-        form.elements['uid'].value = document.getElementById('user_id').value;
-        form.elements['comment'].value = document.getElementById('comment').value;
-        form.elements['treatment'].value = document.getElementById('treatment').value;
-        form.elements['investigation'].value = document.getElementById('investigation_details').value;
-
-
-        form.elements['tableData'].value = JSON.stringify(tableData);
-        form.elements['tableOutData'].value = JSON.stringify(tableOutData);
-        form.elements['tableMedical'].value = JSON.stringify(tableMedical);
-        form.elements['tableInvesti'].value = JSON.stringify(tableInvesti);
-
-
-        form.submit();
+                var drugName = $(row).find('td:eq(0)').text().trim();
+                var dose = $(row).find('td:eq(1) input').val();
+                var period = $(row).find('td:eq(2) input').val();
+    var terms = $(row).find('td:eq(3) select').val();
+    
+    
+                dose = dose ? dose.trim() : '';
+                period = period ? period.trim() : '';
+                terms = terms ? terms.trim() : '';
+    
+                var rowData = {
+                    'drugName': drugName,
+                    'dose': dose,
+                    'period': period,
+                    'terms': terms
+    
+                };
+    
+                tableOutData.push(rowData);
+            });
+    
+    
+    var form = document.getElementById('postDataout');
+    form.elements['uid'].value = document.getElementById('user_id').value;
+    
+    form.elements['tableOutData'].value = JSON.stringify(tableOutData);
+    
+    
+    
+    form.submit();
     }
-</script>
-
-<script>
-    // this script tag use to open popup box and close popup box 
-    // assign to old user
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('openPopup').addEventListener('click', function() {
-            document.getElementById('updatePopup').style.display = 'block';
+    </script>
+    
+    <script>
+        // this script tag use to open popup box and close popup box 
+        // assign to old user
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('openPopup').addEventListener('click', function() {
+                document.getElementById('updatePopup').style.display = 'block';
+            });
+            document.getElementById('closePopup').addEventListener('click', function() {
+                document.getElementById('updatePopup').style.display = 'none';
+            });
         });
-        document.getElementById('closePopup').addEventListener('click', function() {
-            document.getElementById('updatePopup').style.display = 'none';
-        });
-    });
-</script>
-<!-- outside table -->
-<script>
-    function addtableout() {
-        var drugName = $('#outInput').val().trim();
-        if (drugName === "") {
-            alert("Drug name is empty");
-        } else if (!isOutsideDuplicate(drugName)) {
-            addoutside(drugName);
-            $('#outInput').val('');
-        } else {
-            alert('Drug name already exists');
+    </script>
+    <!-- outside table -->
+    <script>
+       function addtableout() {
+            var drugName = $('#outInput').val().trim();
+            if (drugName === "") {
+                silverBox({
+                    alertIcon: "error",
+                    text: "Drug name is empty",
+                    centerContent: true,
+                    cancelButton: {
+                            text: "OK"
+                    },
+                    theme:'dark'
+                })
+            } else if (!isOutsideDuplicate(drugName)) {
+                addoutside(drugName);
+                $('#outInput').val('');
+            } else {
+                silverBox({
+                    alertIcon: "error",
+                    text: "Drug name already exists",
+                    centerContent: true,
+                    cancelButton: {
+                            text: "OK"
+                    },
+                    theme:'dark'
+                })
+            }
+            // Get the input element
+            $('input[name="outsidedose[]"]').last().focus();
+    
         }
-        // Get the input element
-        var dataInput = document.getElementById('outInput');
-
-        // Focus on the input field
-        dataInput.focus();
+    
+        function isOutsideDuplicate(name) {
+            return $('#table2 tbody td:contains("' + name + '")').length > 0;
+        }
+    
+        function addoutside(drugName) {
+            var table = $('#table2 tbody');
+            var previousRow = table.find('tr:last');
+        if (previousRow && previousRow.length > 0) {
+        var previousDoseInput = previousRow.find('input[name="outsidedose[]"]');
+        var previousPeriodInput = previousRow.find('input[name="outsideperiod[]"]');
+    
+        if (previousDoseInput.length > 0 && previousPeriodInput.length > 0) {
+            var previousDose = previousDoseInput.val().trim();
+            var previousPeriod = previousPeriodInput.val().trim();
+    
+            if (previousDose === '' || previousPeriod === '') {
+                silverBox({
+                    alertIcon: "error",
+                    text: "Previous drug's dose and period cannot be empty.",
+                    centerContent: true,
+                    cancelButton: {
+                        text: "OK",
+                        onClick: function () {
+                            previousDoseInput.focus();
+                        }
+                    },
+                    theme: 'dark'
+                });
+                return; // Prevent adding a new drug
+            }
+        }
     }
-
-    function isOutsideDuplicate(name) {
-        return $('#table2 tbody td:contains("' + name + '")').length > 0;
+    var newRow =
+        '<tr>' +
+        '<td style="text-align: left; line-height: 1.3;"><input type="hidden" style="font-size:10px;" name="outsideid[]" class="form-control" value="' +
+        drugName + '">' + drugName + '</td>' +
+        '<td><input type="text" style="font-size:10px;" name="outsidedose[]" class="form-control" oninput="validateNumericInput(this)"></td>' +
+        '<td><input type="text" style="font-size:10px;" name="outsideperiod[]" class="form-control" oninput="validateNumericInput(this)"></td>' +
+        '<td><select name="outterms[]" required>';
+        
+    @foreach ($terms as $term)
+        newRow += '<option value="{{ $term->terms }}">{{ $term->terms }}</option>';
+    @endforeach
+    
+    newRow += '</select></td>' +
+        '<td><button type="button" onclick="deleteRow(this)" style="font-size:10px;" class="btn-sm btn-danger delete-row">Delete</button></td>' +
+        '</tr>';
+    
+    table.append(newRow);
+    
+            // Attach an event listener to the last dose input field
+        table.find('input[name="outsidedose[]"]').last().on('keydown', function (e) {
+           var previousRow = table.find('tr:last');
+    
+                var previousDose = previousRow.find('input[name="outsidedose[]"]').val().trim();
+    
+                if (e.key === 'Enter') {
+                    if(previousDose === ''){
+                        silverBox({
+                            alertIcon: "error",
+                            text: "Previous drug\'s dose  cannot be empty.",
+                            centerContent: true,
+                            cancelButton: {
+                                    text: "OK",
+                                    onClick: function () {
+                        $('input[name="outsidedose[]"]').last().focus();
+    
+                                    }
+                            }
+                        })
+                        table.find('input[name="outsidedose[]"]').last().focus();
+                    }else{
+                        // Focus on the next period input field
+                        table.find('input[name="outsideperiod[]"]').last().focus();
+                    }
+                }else if (e.key === 'Escape') {
+                    event.preventDefault();
+                    var previousRow = table.find('tr:last');
+                    previousRow.remove();
+                } 
+        });
+        table.find('input[name="outsideperiod[]"]').last().on('keydown', function (e) {
+             var previousRow = table.find('tr:last');
+    
+                var previousPeriod = previousRow.find('input[name="outsideperiod[]"]').val().trim();
+    
+                if (e.key === 'Enter') {
+                    if(previousPeriod === ''){
+                        silverBox({
+                            alertIcon: "error",
+                            text: "Previous drug\'s period  cannot be empty.",
+                            centerContent: true,
+                            cancelButton: {
+                                    text: "OK",
+                                    onClick: function () {
+                        $('input[name="outsideperiod[]"]').last().focus();
+    
+                                    }
+                            }
+                        })
+                        table.find('input[name="outsideperiod[]"]').last().focus();
+                    }else{
+                         event.preventDefault();
+                        
+                        $('select[name="outterms[]"]').last().focus();
+                    }
+                }else if (e.key === 'Escape') {
+                    event.preventDefault();
+                    var previousRow = table.find('tr:last');
+                    previousRow.remove();
+                } 
+            
+    
+    
+        
+    });
+        // Attach an event listener to the last terms dropdown
+        table.find('select[name="outterms[]"]').last().on('change keypress', function (e) {
+            if (e.key === 'Enter') {
+                var dataInput = document.getElementById('outInput');
+                dataInput.focus();
+            }
+        });
+        }
+    
+        function deleteRow(button) {
+            var row = $(button).closest('tr');
+            row.remove();
+        }
+    </script>
+    
+    
+    
+    <!-- opdside table -->
+    <script>
+        function addtableopd() {
+            var drugName = $('#opdInput').val().trim();
+            if (drugName === "") {
+                silverBox({
+                    alertIcon: "error",
+                    text: "Drug name is empty",
+                    centerContent: true,
+                    cancelButton: {
+                            text: "OK"
+                    },
+                    theme:'dark'
+                })
+            } else if (!isOpdDuplicate(drugName)) {
+                addopd(drugName);
+                $('#opdInput').val('');
+            } else {
+                silverBox({
+                    alertIcon: "error",
+                    text: "Drug name already exists",
+                    centerContent: true,
+                    theme:'dark',
+                    cancelButton: {
+                            text: "OK"
+                    },
+                    theme:'dark'
+                })
+            }
+            $('input[name="opddose[]"]').last().focus();
+    
+        }
+    
+        function isOpdDuplicate(name) {
+            return $('#faqs tbody td:contains("' + name + '")').length > 0;
+        }
+    
+        function addopd(drugName) {
+            var table = $('#faqs tbody');
+            var previousRow = table.find('tr:last');
+    if (previousRow && previousRow.length > 0) {
+        var previousDoseInput = previousRow.find('input[name="opddose[]"]');
+        var previousPeriodInput = previousRow.find('input[name="opdperiod[]"]');
+    
+        if (previousDoseInput.length > 0 && previousPeriodInput.length > 0) {
+            var previousDose = previousDoseInput.val().trim();
+            var previousPeriod = previousPeriodInput.val().trim();
+    
+            if (previousDose === '' || previousPeriod === '') {
+                silverBox({
+                    alertIcon: "error",
+                    text: "Previous drug's dose and period cannot be empty.",
+                    centerContent: true,
+                    cancelButton: {
+                        text: "OK",
+                        onClick: function () {
+                            previousDoseInput.focus();
+                        }
+                    },
+                    theme: 'dark'
+                });
+                return; // Prevent adding a new drug
+            }
+        }
     }
-
-    function addoutside(drugName) {
+    
+            var newRow = '<tr>' +
+                '<td style="text-align: left; line-height: 1.3;" ><input type="hidden" style="font-size:10px;" name="opdid[]" class="form-control" value="' +
+                drugName + '">' + drugName + '</td>' +
+                '<td><input type="text" style="font-size:10px;" name="opddose[]" class="form-control" required oninput="validateNumericInput(this)"></td>' +
+                '<td><input type="text" style="font-size:10px;" name="opdperiod[]" class="form-control" required oninput="validateNumericInput(this)"></td>' +
+                '<td><select name="termsOPD[]"   required>';
+                @foreach ($terms as $term)
+        newRow += '<option value="{{ $term->terms }}">{{ $term->terms }}</option>';
+    @endforeach
+    
+    newRow += '</select></td>' +
+                '<td><button type="button" onclick="deleteRow(this)" style="font-size:10px;" class="btn-sm btn-danger delete-row">Delete</button></td>' +
+                '</tr>';
+            table.append(newRow);
+            // Attach an event listener to the last dose input field
+        table.find('input[name="opddose[]"]').last().on('keydown', function (e) {
+                     var previousRow = table.find('tr:last');
+    
+                var previousDose = previousRow.find('input[name="opddose[]"]').val().trim();
+    
+                if (e.key === 'Enter') {
+                    if(previousDose === ''){
+                        silverBox({
+                            alertIcon: "error",
+                            text: "Previous drug\'s dose  cannot be empty.",
+                            centerContent: true,
+                            theme:'dark',
+                            cancelButton: {
+                                    text: "OK",
+                                    onClick: function () {
+                        $('input[name="opddose[]"]').last().focus();
+    
+                                    }
+                            }
+                        })
+                        table.find('input[name="opddose[]"]').last().focus();
+                    }else{
+     // Focus on the next period input field
+                        table.find('input[name="opdperiod[]"]').last().focus();
+                    }
+                }
+                else if (e.key === 'Escape') {
+                    event.preventDefault();
+                    var previousRow = table.find('tr:last');
+                    previousRow.remove();
+                } 
+        });
+        table.find('input[name="opdperiod[]"]').last().on('keydown', function (e) {
+        
+        var previousRow = table.find('tr:last');
+    
+                var previousPeriod = previousRow.find('input[name="opdperiod[]"]').val().trim();
+    
+                if (e.key === 'Enter') {
+                    if(previousPeriod === ''){
+                        silverBox({
+                            alertIcon: "error",
+                            text: "Previous drug\'s period  cannot be empty.",
+                            centerContent: true,
+                            theme:'dark',
+                            cancelButton: {
+                                    text: "OK",
+                                    onClick: function () {
+                        $('input[name="opdperiod[]"]').last().focus();
+    
+                                    }
+                            }
+                        })
+                        table.find('input[name="opdperiod[]"]').last().focus();
+                    }else{
+                         event.preventDefault();
+    table.find('select[name="termsOPD[]"]').last().focus();
+    
+                    }
+                }
+                else if (e.key === 'Escape') {
+                    event.preventDefault();
+                    var previousRow = table.find('tr:last');
+                    previousRow.remove();
+                } 
+            
+    });
+        // Attach an event listener to the last terms dropdown
+        table.find('select[name="termsOPD[]"]').last().on('change keypress', function (e) {
+            if (e.key === 'Enter' ) {
+                var dataInput = document.getElementById('opdInput');
+                dataInput.focus();
+            }
+        });
+        }
+    
+        function deleteRow(button) {
+            var row = $(button).closest('tr');
+            row.remove();
+        }
+    </script>
+    <script>
+    // escape button delete table last row
+        document.addEventListener('DOMContentLoaded', function() {
+            $('#opdInput').on('keydown', function (e) {
+    
+    if (e.key === 'Escape') {
+        e.preventDefault();
+        var table = $('#faqs tbody');
+        var previousRow = table.find('tr:last');
+        previousRow.remove();
+    }
+    });
+        });
+    </script>
+    <script>
+    // escape button delete table last row
+        document.addEventListener('DOMContentLoaded', function() {
+            $('#outInput').on('keydown', function (e) {
+    
+    if (e.key === 'Escape') {
+        e.preventDefault();
         var table = $('#table2 tbody');
-        var newRow =
-            '<tr>' +
-            '<td style="text-align: left; line-height: 1.3;"><input type="hidden" style="font-size:10px;" name="outsideid[]" class="form-control" value="' +
-            drugName + '">' + drugName + '</td>' +
-            '<td><input type="text" style="font-size:10px;" name="outsidedose[]" class="form-control"></td>' +
-            '<td><input type="text" style="font-size:10px;" name="outsideperiod[]" class="form-control"></td>' +
-            '<td><button type="button" onclick="deleteRow(this)" style="font-size:10px;" class="btn-sm btn-danger delete-row">Delete</button></td>' +
-            '</tr>';
-        table.append(newRow);
+        var previousRow = table.find('tr:last');
+        previousRow.remove();
     }
-
-    function deleteRow(button) {
+    });
+        });
+    </script>
+    <!-- MedicalTest table -->
+    <script>
+    var medicalTestsArray = [];
+    
+    function addtableMedicaltest() {
+        var mediTestInput = $('#mediTest');
+        var mediTestValue = mediTestInput.val().trim();
+    
+        if (mediTestValue === "") {
+            silverBox({
+                    alertIcon: "error",
+                    text: "Medical test name is empty",
+                    centerContent: true,
+                    cancelButton: {
+                            text: "OK"
+                    },
+                    theme:'dark'
+                })
+        } else if (!medicalTestsArray.includes(mediTestValue)) {
+            addMedicaltable(mediTestValue);
+            medicalTestsArray.push(mediTestValue);
+            mediTestInput.val('');
+        } else {
+            silverBox({
+                    alertIcon: "error",
+                    text: "Medical test name already exists",
+                    centerContent: true,
+                    cancelButton: {
+                            text: "OK"
+                    },
+                    theme:'dark'
+                })
+        }
+        var dataInput = document.getElementById('mediTest');
+    
+                    // Focus on the input field
+                    dataInput.focus();
+    }
+    
+    function addMedicaltable(drugName) {
+            var table = $('#listView');
+            var newItem = '<tr>' +
+                '<input type="hidden" style="font-size:10px;" name="medid[]" class="form-control" value="' +
+                drugName + '"> ' + drugName +
+    
+                '<td style="text-align: left; line-height: 1.3;">' + drugName + '</td>' +
+                '<td><button type="button" style="font-size:8px;" class="btn-sm btn-danger delete-item">Delete</button></td>' +
+                '</tr>';
+            table.append(newItem);
+        }
+    
+    
+    function deleteItem(button) {
         var row = $(button).closest('tr');
+        var medicalTestName = row.find('td:first').text();
+        medicalTestsArray = medicalTestsArray.filter(item => item !== medicalTestName);
         row.remove();
     }
-</script>
+    </script>
+    <script>
+    // escape button delete table last row
+        document.addEventListener('DOMContentLoaded', function() {
+            $('#mediTest').on('keydown', function (e) {
+    
+    if (e.key === 'Escape') {
+        e.preventDefault();
+        var table = $('#listView tbody');
+        var previousRow = table.find('tr:last');
+        previousRow.remove();
+    }
+    });
+        });
+    </script>
+    <!-- Investigation table -->
+    <script>
+    function addtableInvesti() {
+            var data = $('#investi').val().trim();
+            if (data === "") {
+                silverBox({
+                    alertIcon: "error",
+                    text: "Investigation name is empty",
+                    centerContent: true,
+                    cancelButton: {
+                            text: "OK"
+                    },
+                    theme:'dark'
+                })
+            } else if (!isInvestigationDuplicate(data)) {
+                addInvestitable(data);
+                $('#investi').val('');
+            } else {
+                silverBox({
+                    alertIcon: "error",
+                    text: "Investigation name already exists",
+                    centerContent: true,
+                    cancelButton: {
+                            text: "OK"
+                    },
+                    theme:'dark'
+                })
+            }
+            var dataInput = document.getElementById('investi');
+    
+                    // Focus on the input field
+                    dataInput.focus();
+        }
+    
+        function isInvestigationDuplicate(name) {
+            return $('#investigationTable tbody td:contains("' + name + '")').length > 0;
+        }
+    
+    function addInvestitable(drugName) {
+            var table = $('#investigationTable');
+            var newItem = '<tr>' +
+                '<input type="hidden" style="font-size:10px;" name="invid[]" class="form-control" value="' +
+                drugName + '"> ' + drugName +
+                '<td style="text-align: left; line-height: 1.3;">' + drugName + '</td>' +
+                '<td><button type="button" style="font-size:8px;" class="btn-sm btn-danger delete-item-investi">Delete</button></td>' +
+                '</tr>';
+            table.append(newItem);
+        }
+    
+    
+        function deleteInvestiItem(button) {
+            var row = $(button).closest('tr');
+            row.remove();
+        }
+    </script>
+    <script>
+    // escape button delete table last row
+        document.addEventListener('DOMContentLoaded', function() {
+            $('#investi').on('keydown', function (e) {
+    
+    if (e.key === 'Escape') {
+        e.preventDefault();
+        var table = $('#investigationTable tbody');
+        var previousRow = table.find('tr:last');
+        previousRow.remove();
+    }
+    });
+        });
+    </script>
+    <!-- Delete row-->
+    <script>
+        $(document).ready(function() {
+            // opd drug table
+            $('#faqs').on('click', '.delete-row', function() {
+                $(this).closest('tr').remove();
+            });
+    
+            // outside drug table
+            $('#table2').on('click', '.delete-row', function() {
+                $(this).closest('tr').remove();
+            });
+    
+            // medicaltest drug table
+            $('#listView').on('click', '.delete-item', function() {
+                $(this).closest('tr').remove();
+            });
+            // Investigation drug table
+            $('#investigationTable').on('click', '.delete-item-investi', function() {
+                $(this).closest('tr').remove();
+            });
+        });
+    </script>
+    <script>
+    function validateNumericInput(inputElement) {
+        // Allow only numeric values for dose and period
+        inputElement.value = inputElement.value.replace(/[^0-9]/g, '');
+    }
+    </script>
 
 
 
