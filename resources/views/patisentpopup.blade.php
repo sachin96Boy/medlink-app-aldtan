@@ -10,9 +10,9 @@
     @section('content')
         <div class="container">
             <div class="row">
-  <a href="{{ url()->previous() }}" <button
-                            style="margin-left: 2px; margin-bottom: 7px;border-radius: 30px; background-image: linear-gradient(to bottom, #7900ff, #2b8ffc);width:150px;"
-                            type="button" class="btn  btn-info btn-sm"><b> Back  </b></button></a>   
+                <a href="{{ url()->previous() }}" <button
+                    style="margin-left: 2px; margin-bottom: 7px;border-radius: 30px; background-image: linear-gradient(to bottom, #7900ff, #2b8ffc);width:150px;"
+                    type="button" class="btn  btn-info btn-sm"><b> Back </b></button></a>
                 <center>
                     <h5>Patient List by Family Name</h5>
                 </center>
@@ -47,7 +47,7 @@
                                             <td>{{ $patient->mobile }}</td>
                                             <td class="project-actions">
                                                 <center>
-                                                    <a href="{{ route("view_patient_details", $patient->id) }}">
+                                                    <a href="{{ route('view_patient_details', $patient->id) }}">
                                                         <button type="button" class="btn btn-secondary"
                                                             style="border-radius: 10px; background-image: linear-gradient(to bottom, #4fdcd7, #52f3bc);border:none;box-shadow: 1px 5px 1px rgba(0, 0, 0, 0.1);">Enter</button>
                                                     </a>
@@ -58,7 +58,7 @@
                                 </tbody>
                             </table>
                         </div>
-                                        </div>
+                    </div>
 
                 </div>
             </div>

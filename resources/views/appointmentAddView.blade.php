@@ -74,25 +74,29 @@
     @section('content')
         <div class="container">
             <div class="row">
-               
-                <a href="{{ route('appointments_view') }}"> <button style="margin-left: 45px; border-radius: 30px; background-image: linear-gradient(to bottom, #7900ff, #2b8ffc);box-shadow: 1px 5px 1px rgba(0, 0, 0, 0.1);" type="button"
-                        class="btn  btn-info btn-sm"><b> View Appointment List</b></button></a>
+
+                <a href="{{ route('appointments_view') }}"> <button
+                        style="margin-left: 45px; border-radius: 30px; background-image: linear-gradient(to bottom, #7900ff, #2b8ffc);box-shadow: 1px 5px 1px rgba(0, 0, 0, 0.1);"
+                        type="button" class="btn  btn-info btn-sm"><b> View Appointment List</b></button></a>
 
                 <div class="col-12 overflow-scroll" style="height: 550px;">
 
                     <form action="{{ route('appointment.add') }}" method="POST">
                         @csrf
                         <div class="row mb-3">
-                            <label style="font-size: 12px;"for="appointment_date" class="col-sm-2 col-form-label">Appointment Date
+                            <label style="font-size: 12px;"for="appointment_date"
+                                class="col-sm-2 col-form-label">Appointment Date
                                 <span class="text-danger">*</span></label>
                             <div class="col-sm-10">
 
-                                <input  style=" font-size: 12px;" type="date" class="form-control" id="appointment_date" name="appointment_date" required>
+                                <input style=" font-size: 12px;" type="date" class="form-control" id="appointment_date"
+                                    name="appointment_date" required>
                             </div>
                         </div>
 
                         <div class="row mb-3" style="margin-top: 10px;">
-                            <label style="font-size: 12px;"for="patient_name" class="col-sm-2 col-form-label">Patient Name</label>
+                            <label style="font-size: 12px;"for="patient_name" class="col-sm-2 col-form-label">Patient
+                                Name</label>
                             <div class="col-sm-10">
                                 <select class="form-control" id="patient_name" name="patient_name" rows="4">
                                     <option value="" selected>-</option>
@@ -103,7 +107,9 @@
                                 </select>
                             </div>
                         </div>
-                        <button type="submit" style="margin-left: 45px; border-radius: 30px; background-image: linear-gradient(to bottom, #7900ff, #2b8ffc);box-shadow: 1px 5px 1px rgba(0, 0, 0, 0.1);" class="btn  btn-info btn-sm"><b> Add Appointment</b></button>
+                        <button type="submit"
+                            style="margin-left: 45px; border-radius: 30px; background-image: linear-gradient(to bottom, #7900ff, #2b8ffc);box-shadow: 1px 5px 1px rgba(0, 0, 0, 0.1);"
+                            class="btn  btn-info btn-sm"><b> Add Appointment</b></button>
 
                     </form>
                 </div>

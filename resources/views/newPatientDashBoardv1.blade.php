@@ -1,6 +1,3 @@
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <!DOCTYPE html>
@@ -277,6 +274,7 @@ if ($conn->query($appointmentUpdateQuery) === TRUE) {
 $conn->close();
 }
 ?>
+
 <body class="bg-gray-100">
     @extends('layouts.app')
     @section('content')
@@ -307,7 +305,8 @@ $conn->close();
                     </div>
                 </form>
             </div>
-            <form action="{{ route('appoinmentfinished', $p->id) }}" method="POST" onsubmit="return confirmSubmit()" id="form1">
+            <form action="{{ route('appoinmentfinished', $p->id) }}" method="POST" onsubmit="return confirmSubmit()"
+                id="form1">
                 @csrf
                 <input type="hidden" id="patient_id" name="patient_id" value="{{ $p->id }}">
                 <!--View start -->
@@ -321,7 +320,7 @@ $conn->close();
                                     <!--Patient name and Family name-->
                                     <div class="d-flex flex-column flex-lg-row gap-2 align-items-cente">
                                         <i class="fa fa-user-o mt-2" style="font-size:16px;"></i>patient
-                                            <b>{{ $p->name }}</b>
+                                        <b>{{ $p->name }}</b>
                                         <button type="button"
                                             onclick="submitForm('{{ $p->family_name }}', '{{ $p->id }}')"
                                             style="border-radius: 15px;background-color:#8ff397; background-image: linear-gradient(to bottom, #ff0055, #fc2ba8); "
@@ -367,156 +366,156 @@ $conn->close();
                                                     <b>Assign old user</b></button>
                                             </div>
                                             <!--Key Functions-->
-            <script>
-    document.addEventListener('keydown', function(event) {
-    // Press F1 Button
-    if (event.keyCode === 112) {
-        event.preventDefault();
+                                            <script>
+                                                document.addEventListener('keydown', function(event) {
+                                                    // Press F1 Button
+                                                    if (event.keyCode === 112) {
+                                                        event.preventDefault();
 
-                // Get the input element
-                var dataInput = document.getElementById('investi');
+                                                        // Get the input element
+                                                        var dataInput = document.getElementById('investi');
 
-                // Focus on the input field
-                dataInput.focus();
-    } 
-    // Press F2 Button
-    else if (event.keyCode === 113) {
-        event.preventDefault();
+                                                        // Focus on the input field
+                                                        dataInput.focus();
+                                                    }
+                                                    // Press F2 Button
+                                                    else if (event.keyCode === 113) {
+                                                        event.preventDefault();
 
-                // Get the input element
-                var dataInput = document.getElementById('investigation_details');
+                                                        // Get the input element
+                                                        var dataInput = document.getElementById('investigation_details');
 
-                // Focus on the input field
-                dataInput.focus();
-    }
-    // Press F3 Button
-    else if (event.keyCode === 114) {
-        event.preventDefault();
+                                                        // Focus on the input field
+                                                        dataInput.focus();
+                                                    }
+                                                    // Press F3 Button
+                                                    else if (event.keyCode === 114) {
+                                                        event.preventDefault();
 
-// Get the input element
-var dataInput = document.getElementById('treatment');
+                                                        // Get the input element
+                                                        var dataInput = document.getElementById('treatment');
 
-// Focus on the input field
-dataInput.focus();
-    }
-    // Press F4 Button
-    else if (event.keyCode === 115) {
-        event.preventDefault();
+                                                        // Focus on the input field
+                                                        dataInput.focus();
+                                                    }
+                                                    // Press F4 Button
+                                                    else if (event.keyCode === 115) {
+                                                        event.preventDefault();
 
-                // Get the input element
-                var dataInput = document.getElementById('mediTest');
+                                                        // Get the input element
+                                                        var dataInput = document.getElementById('mediTest');
 
-                // Focus on the input field
-                dataInput.focus();
-    }
-    // Press F5 Button
-    else if (event.keyCode === 116) {
-        event.preventDefault();
+                                                        // Focus on the input field
+                                                        dataInput.focus();
+                                                    }
+                                                    // Press F5 Button
+                                                    else if (event.keyCode === 116) {
+                                                        event.preventDefault();
 
-                // Get the input element
-                var dataInput = document.getElementById('opdInput');
+                                                        // Get the input element
+                                                        var dataInput = document.getElementById('opdInput');
 
-                // Focus on the input field
-                dataInput.focus();
-    }
-    // Press F6 Button
-    else if (event.keyCode === 117) {
-        event.preventDefault();
+                                                        // Focus on the input field
+                                                        dataInput.focus();
+                                                    }
+                                                    // Press F6 Button
+                                                    else if (event.keyCode === 117) {
+                                                        event.preventDefault();
 
-// Get the input element
-var dataInput = document.getElementById('outInput');
+                                                        // Get the input element
+                                                        var dataInput = document.getElementById('outInput');
 
-// Focus on the input field
-dataInput.focus();
-    }
-    // Press F7 Button
-    else if (event.keyCode === 118) {
-        event.preventDefault();
+                                                        // Focus on the input field
+                                                        dataInput.focus();
+                                                    }
+                                                    // Press F7 Button
+                                                    else if (event.keyCode === 118) {
+                                                        event.preventDefault();
 
-                // Get the input element
-                var dataInput = document.getElementById('next_visit_date');
+                                                        // Get the input element
+                                                        var dataInput = document.getElementById('next_visit_date');
 
-                // Focus on the input field
-                dataInput.focus();
-    }
-    // Press F8  Button
-    else if (event.keyCode === 119) {
-        event.preventDefault();
+                                                        // Focus on the input field
+                                                        dataInput.focus();
+                                                    }
+                                                    // Press F8  Button
+                                                    else if (event.keyCode === 119) {
+                                                        event.preventDefault();
 
-                // Get the input element
-                var dataInput = document.getElementById('comment');
+                                                        // Get the input element
+                                                        var dataInput = document.getElementById('comment');
 
-                // Focus on the input field
-                dataInput.focus();
-    }
-    // Press F9 Button
-    else if (event.keyCode === 120) {
-        event.preventDefault();
-                var dataInput = document.getElementById('amount');
-                dataInput.focus();
-    }
-        //press F10
-    else if (event.keyCode === 121) {
-        event.preventDefault();
+                                                        // Focus on the input field
+                                                        dataInput.focus();
+                                                    }
+                                                    // Press F9 Button
+                                                    else if (event.keyCode === 120) {
+                                                        event.preventDefault();
+                                                        var dataInput = document.getElementById('amount');
+                                                        dataInput.focus();
+                                                    }
+                                                    //press F10
+                                                    else if (event.keyCode === 121) {
+                                                        event.preventDefault();
 
-        window.location.href = '{{ route('patienteditview', ['id' => $p->id]) }}';
+                                                        window.location.href = '{{ route('patienteditview', ['id' => $p->id]) }}';
 
-    }
-    // Press F12 Button
-    else if (event.keyCode === 123) {
-        event.preventDefault();
+                                                    }
+                                                    // Press F12 Button
+                                                    else if (event.keyCode === 123) {
+                                                        event.preventDefault();
 
-                submitForm('form1');
-    }
-    // Press ctrl + u Buttons
-    //investigation history
-    else if (event.ctrlKey == true && event.key === 'u') {
+                                                        submitForm('form1');
+                                                    }
+                                                    // Press ctrl + u Buttons
+                                                    //investigation history
+                                                    else if (event.ctrlKey == true && event.key === 'u') {
 
-        window.location.href = '{{ route('investigationhistory', ['id' => $p->id]) }}';
+                                                        window.location.href = '{{ route('investigationhistory', ['id' => $p->id]) }}';
 
-    }
-    // Press ctrl + g Buttons
-    // medical history
-    else if (event.ctrlKey == true && event.key === 'g') {
-        window.location.href = '{{ route('medicalhistory', ['id' => $p->id]) }}';
+                                                    }
+                                                    // Press ctrl + g Buttons
+                                                    // medical history
+                                                    else if (event.ctrlKey == true && event.key === 'g') {
+                                                        window.location.href = '{{ route('medicalhistory', ['id' => $p->id]) }}';
 
-        
-}
-// Press ctrl + h Buttons
-// drug history
-else if (event.ctrlKey == true && event.key === 'h') {
 
-    window.location.href = '{{ route('drughistory', ['id' => $p->id]) }}';
+                                                    }
+                                                    // Press ctrl + h Buttons
+                                                    // drug history
+                                                    else if (event.ctrlKey == true && event.key === 'h') {
 
-}
-// Press ctrl + j Buttons
-// patient data
-else if (event.ctrlKey == true && event.key === 'j') {
+                                                        window.location.href = '{{ route('drughistory', ['id' => $p->id]) }}';
 
-    window.location.href = '{{ route('investigation_history', ['id' => $p->id]) }}';
+                                                    }
+                                                    // Press ctrl + j Buttons
+                                                    // patient data
+                                                    else if (event.ctrlKey == true && event.key === 'j') {
 
-}
-// Press ctrl + k Buttons
-// print report
-else if (event.ctrlKey == true && event.key === 'k') {
-postData();
-        
-}
-// Press ctrl + m Buttons
-else if (event.ctrlKey == true && event.key === 'm') {
+                                                        window.location.href = '{{ route('investigation_history', ['id' => $p->id]) }}';
 
-        
-}
-// Press ctrl + b Buttons
-else if (event.ctrlKey == true && event.key === 'b') {
+                                                    }
+                                                    // Press ctrl + k Buttons
+                                                    // print report
+                                                    else if (event.ctrlKey == true && event.key === 'k') {
+                                                        postData();
 
-        
-}
-});
-</script>
-            
-            
-            
+                                                    }
+                                                    // Press ctrl + m Buttons
+                                                    else if (event.ctrlKey == true && event.key === 'm') {
+
+
+                                                    }
+                                                    // Press ctrl + b Buttons
+                                                    else if (event.ctrlKey == true && event.key === 'b') {
+
+
+                                                    }
+                                                });
+                                            </script>
+
+
+
                                         </div>
                                     </div>
                                 </div>
@@ -582,8 +581,8 @@ else if (event.ctrlKey == true && event.key === 'b') {
                                                 style="background-color: #EBEFF3; border-radius:10px;">
                                                 <!--Topic-->
                                                 <div class="row text-center">
-                                                    <b >PRESENTING COMPLAIN <label for="help">[F1]</label></b>
-                                                    
+                                                    <b>PRESENTING COMPLAIN <label for="help">[F1]</label></b>
+
 
                                                 </div>
                                                 <!--Insert Input and add button-->
@@ -592,7 +591,8 @@ else if (event.ctrlKey == true && event.key === 'b') {
                                                         class="d-flex flex-column flex-md-row align-items-center justify-content-center gap-2">
                                                         <div>
                                                             <input type="text" id="investi" name="investi"
-                                                                list="invList" class="form-control" onkeypress="investihandleKeyPress(event)"/>
+                                                                list="invList" class="form-control"
+                                                                onkeypress="investihandleKeyPress(event)" />
                                                         </div>
                                                         <button type="button" onclick="addtableInvesti()"
                                                             style="font-size: 13px;"
@@ -627,13 +627,13 @@ else if (event.ctrlKey == true && event.key === 'b') {
                                                 <div class="p-2">
                                                     <div class="col text-center">
                                                         <textarea title="Press F2" id="investigation_details"
-    style="line-height: 1.4; font-size: 13px; background-color: #EBEFF3; height: 32dvh; width: 100%;"
-    name="investigation_details" placeholder="Investigation Details">
+                                                            style="line-height: 1.4; font-size: 13px; background-color: #EBEFF3; height: 32dvh; width: 100%;"
+                                                            name="investigation_details" placeholder="Investigation Details">
                                                         @if ($investigationDel->isNotEmpty())
 {{ $investigationDel->last()->investigation_details }}
 @endif
                                                     </textarea>
-                                                    
+
                                                     </div>
                                                 </div>
                                                 {{-- end of  Investigation TestArea --}}
@@ -652,7 +652,7 @@ else if (event.ctrlKey == true && event.key === 'b') {
                                                         <!--Topic-->
                                                         <div class="row text-center">
                                                             <b>TREATMENTS<label for="help">[F3]</label></b>
-                                                            
+
 
                                                         </div>
                                                         <!-- TextArea -->
@@ -674,7 +674,7 @@ else if (event.ctrlKey == true && event.key === 'b') {
                                                         <!--Topic-->
                                                         <div class="row text-center">
                                                             <b>MEDICAL TESTS<label for="help">[F4]</label></b>
-                                                            
+
 
                                                         </div>
                                                         <!-- Input and Add button -->
@@ -683,7 +683,8 @@ else if (event.ctrlKey == true && event.key === 'b') {
                                                             <div>
                                                                 <input type="text" id="mediTest" name="mediTest"
                                                                     list="mediList" class="form-control"
-                                                                    style="display:inline-flex; align-items:baseline;" onkeypress="meditesthandleKeyPress(event)">
+                                                                    style="display:inline-flex; align-items:baseline;"
+                                                                    onkeypress="meditesthandleKeyPress(event)">
                                                             </div>
                                                             <div>
                                                                 <button type="button" onclick="addtableMedicaltest()"
@@ -728,7 +729,7 @@ else if (event.ctrlKey == true && event.key === 'b') {
                                                         <!--Topic-->
                                                         <div class="row text-center">
                                                             <b>OPD Drugs<label for="help">[F5]</label></b>
-                                                            
+
 
                                                         </div>
                                                         <!-- Input and Add button -->
@@ -736,7 +737,8 @@ else if (event.ctrlKey == true && event.key === 'b') {
                                                             class="text-center gap-2 d-flex flex-column flex-md-row align-items-center">
                                                             <div>
                                                                 <input type="text" id="opdInput" name="opd"
-                                                                    list="drugList" class="form-control" onkeypress="opdhandleKeyPress(event) ">
+                                                                    list="drugList" class="form-control"
+                                                                    onkeypress="opdhandleKeyPress(event) ">
                                                             </div>
                                                             <div>
                                                                 <button type="button" onclick="addtableopd()"
@@ -783,14 +785,15 @@ else if (event.ctrlKey == true && event.key === 'b') {
                                                         <!--Topic-->
                                                         <div class="row text-center">
                                                             <b>OUTSIDE Drugs<label for="help">[F6]</label></b>
-                                                            
+
 
                                                         </div>
                                                         <!-- Input and Add button -->
                                                         <div class="d-flex gap-2 flex-col flex-md-row align-items-center ">
                                                             <div>
                                                                 <input type="text" id="outInput" name="out"
-                                                                    list="drugList" class="form-control" onkeypress="outhandleKeyPress(event)" />
+                                                                    list="drugList" class="form-control"
+                                                                    onkeypress="outhandleKeyPress(event)" />
                                                             </div>
                                                             <div>
                                                                 <datalist id="drugList">
@@ -842,7 +845,7 @@ else if (event.ctrlKey == true && event.key === 'b') {
                                                 <div>
                                                     <div class="row text-center">
                                                         <b> NEXT VISIT DATE<label for="help">[F7]</label> </b>
-                                                                                                            
+
 
                                                     </div>
                                                     <!-- Next visit date input tag-->
@@ -858,7 +861,7 @@ else if (event.ctrlKey == true && event.key === 'b') {
                                                 <div>
                                                     <div class="row text-center mt-3">
                                                         <b>Remark<label for="help">[F8]</label></b>
-                                                         
+
 
                                                     </div>
                                                     <!-- Comment Input Box-->
@@ -883,7 +886,7 @@ else if (event.ctrlKey == true && event.key === 'b') {
                                                         <label for="tname"
                                                             style="text-align:left ; color:white; background-color:#dbb8b3;width: 100%; height:100%; border-radius:10px;">
                                                             <br><label>Total Amount</label>
-                                                                                                                <label for="help">[F9]</label>
+                                                            <label for="help">[F9]</label>
 
                                                             <input step="100" value="" id="amount"
                                                                 name="amount" type="number" class="form-control"
@@ -894,7 +897,10 @@ else if (event.ctrlKey == true && event.key === 'b') {
                                                 <!-- Finish and Print report Buttons-->
                                                 <div class="row justify-content-center">
                                                     <!-- Finish button-->
-                                                                                                        <input type="button" style="background-color: #4DFF98; width: 90%; font-size: 18px; color: white; border-radius: 15px; text-shadow: 2px 2px 4px #000000; padding-top: 5px; background-image: linear-gradient(to bottom, #4fdcd7, #52f3bc);" class="btn btn-primary" value="FINISH" id="finishButton" onclick="submitForm('form1')">
+                                                    <input type="button"
+                                                        style="background-color: #4DFF98; width: 90%; font-size: 18px; color: white; border-radius: 15px; text-shadow: 2px 2px 4px #000000; padding-top: 5px; background-image: linear-gradient(to bottom, #4fdcd7, #52f3bc);"
+                                                        class="btn btn-primary" value="FINISH" id="finishButton"
+                                                        onclick="submitForm('form1')">
 
                                                     <!-- Print report Button-->
                                                     <button type="button"
@@ -931,44 +937,47 @@ else if (event.ctrlKey == true && event.key === 'b') {
 </body>
 
 <script>
-function submitForm(formId, event) {
-    var isConfirmed = confirm('Are you sure you want to submit the form?');
-    
-    // If not confirmed, prevent form submission
-    if (!isConfirmed) {
-        event.preventDefault();
-    } else {
-        document.getElementById(formId).submit();
-    }
-}
+    function submitForm(formId, event) {
+        var isConfirmed = confirm('Are you sure you want to submit the form?');
 
-document.getElementById('form1').addEventListener('keydown', function (e) {
-    if (e.key === 'Enter') {
-        e.preventDefault();
+        // If not confirmed, prevent form submission
+        if (!isConfirmed) {
+            event.preventDefault();
+        } else {
+            document.getElementById(formId).submit();
+        }
     }
-});
+
+    document.getElementById('form1').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+        }
+    });
 
 
     function investihandleKeyPress(event) {
-        
+
         if (event.key === 'Enter') {
             addtableInvesti();
         }
     }
-        function meditesthandleKeyPress(event) {
-        
+
+    function meditesthandleKeyPress(event) {
+
         if (event.key === 'Enter') {
             addtableMedicaltest();
         }
     }
+
     function opdhandleKeyPress(event) {
-        
+
         if (event.key === 'Enter') {
             addtableopd();
         }
     }
+
     function outhandleKeyPress(event) {
-        
+
         if (event.key === 'Enter') {
             addtableout();
         }
@@ -1083,7 +1092,7 @@ document.getElementById('form1').addEventListener('keydown', function (e) {
 </script>
 <!-- outside table -->
 <script>
-   function addtableout() {
+    function addtableout() {
         var drugName = $('#outInput').val().trim();
         if (drugName === "") {
             alert("Drug name is empty");
@@ -1094,10 +1103,10 @@ document.getElementById('form1').addEventListener('keydown', function (e) {
             alert('Drug name already exists');
         }
         // Get the input element
-var dataInput = document.getElementById('outInput');
+        var dataInput = document.getElementById('outInput');
 
-// Focus on the input field
-dataInput.focus();
+        // Focus on the input field
+        dataInput.focus();
     }
 
     function isOutsideDuplicate(name) {
@@ -1139,8 +1148,8 @@ dataInput.focus();
         }
         var dataInput = document.getElementById('opdInput');
 
-                // Focus on the input field
-                dataInput.focus();
+        // Focus on the input field
+        dataInput.focus();
     }
 
     function isOpdDuplicate(name) {
@@ -1167,28 +1176,28 @@ dataInput.focus();
 
 <!-- MedicalTest table -->
 <script>
-var medicalTestsArray = [];
+    var medicalTestsArray = [];
 
-function addtableMedicaltest() {
-    var mediTestInput = $('#mediTest');
-    var mediTestValue = mediTestInput.val().trim();
+    function addtableMedicaltest() {
+        var mediTestInput = $('#mediTest');
+        var mediTestValue = mediTestInput.val().trim();
 
-    if (mediTestValue === "") {
-        alert("Medical test name is empty");
-    } else if (!medicalTestsArray.includes(mediTestValue)) {
-        addMedicaltable(mediTestValue);
-        medicalTestsArray.push(mediTestValue);
-        mediTestInput.val('');
-    } else {
-        alert('Medical test name already exists');
+        if (mediTestValue === "") {
+            alert("Medical test name is empty");
+        } else if (!medicalTestsArray.includes(mediTestValue)) {
+            addMedicaltable(mediTestValue);
+            medicalTestsArray.push(mediTestValue);
+            mediTestInput.val('');
+        } else {
+            alert('Medical test name already exists');
+        }
+        var dataInput = document.getElementById('mediTest');
+
+        // Focus on the input field
+        dataInput.focus();
     }
-    var dataInput = document.getElementById('mediTest');
 
-                // Focus on the input field
-                dataInput.focus();
-}
-
-function addMedicaltable(drugName) {
+    function addMedicaltable(drugName) {
         var table = $('#listView');
         var newItem = '<tr>' +
             '<input type="hidden" style="font-size:10px;" name="medid[]" class="form-control" value="' +
@@ -1201,17 +1210,17 @@ function addMedicaltable(drugName) {
     }
 
 
-function deleteItem(button) {
-    var row = $(button).closest('tr');
-    var medicalTestName = row.find('td:first').text();
-    medicalTestsArray = medicalTestsArray.filter(item => item !== medicalTestName);
-    row.remove();
-}
+    function deleteItem(button) {
+        var row = $(button).closest('tr');
+        var medicalTestName = row.find('td:first').text();
+        medicalTestsArray = medicalTestsArray.filter(item => item !== medicalTestName);
+        row.remove();
+    }
 </script>
 
 <!-- Investigation table -->
 <script>
-function addtableInvesti() {
+    function addtableInvesti() {
         var data = $('#investi').val().trim();
         if (data === "") {
             alert("Investigation name is empty");
@@ -1223,15 +1232,15 @@ function addtableInvesti() {
         }
         var dataInput = document.getElementById('investi');
 
-                // Focus on the input field
-                dataInput.focus();
+        // Focus on the input field
+        dataInput.focus();
     }
 
     function isInvestigationDuplicate(name) {
         return $('#investigationTable tbody td:contains("' + name + '")').length > 0;
     }
 
-function addInvestitable(drugName) {
+    function addInvestitable(drugName) {
         var table = $('#investigationTable');
         var newItem = '<tr>' +
             '<input type="hidden" style="font-size:10px;" name="invid[]" class="form-control" value="' +
