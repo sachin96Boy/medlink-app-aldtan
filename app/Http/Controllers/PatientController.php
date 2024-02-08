@@ -159,15 +159,15 @@ class PatientController extends Controller
 
             $famname =  Patients::all('family_name')->groupBy('family_name');
 
-            $patient_list = Patients::with('title')->join('titles', 'patients.title', '=', 'titles.id')->get();
+            $patient_list = Patients::with('title')->join('titles', 'patients.title', '=', 'titles.id');
 
             if (isset($request->keyword)) {
                 $keyword = $request->keyword;
-                $patient_list = $patient_list->orwhere("patients.nic", 'LIKE', '%' . $keyword . '%');
-                $patient_list = $patient_list->orwhere("patients.family_name", 'LIKE', '%' . $keyword . '%');
-                $patient_list = $patient_list->orwhere("patients.name", 'LIKE', '%' . $keyword . '%');
-                $patient_list = $patient_list->orwhere("patients.mobile", 'LIKE', '%' . $keyword . '%');
-                $patient_list = $patient_list->orwhere("patients.address", 'LIKE', '%' . $keyword . '%');
+                $patient_list = $patient_list->where("patients.nic", 'LIKE', '%' . $keyword . '%');
+                $patient_list = $patient_list->where("patients.family_name", 'LIKE', '%' . $keyword . '%');
+                $patient_list = $patient_list->where("patients.name", 'LIKE', '%' . $keyword . '%');
+                $patient_list = $patient_list->where("patients.mobile", 'LIKE', '%' . $keyword . '%');
+                $patient_list = $patient_list->where("patients.address", 'LIKE', '%' . $keyword . '%');
             }
 
             $patient_list = $patient_list->where("patients.status", "=", "0")
@@ -205,7 +205,7 @@ class PatientController extends Controller
 
             $famname =  Patients::all()->groupBy('family_name');
 
-            $patients =  Patients::with('title')->select('patients.*', 'titles.id as title')->join('titles', 'patients.title', '=', 'titles.id')->where('patients.id', $id)->get();
+            $patients =  Patients::with('title')->select('patients.*', 'titles.id as title')->join('titles', 'patients.title', '=', 'titles.id')->where('patients.id','=', $id)->get();
 
             return view('patientEditViewTable', ['titles' => $titles, 'patients' => $patients, 'famname' => $famname]);
         } catch (Exception $e) {

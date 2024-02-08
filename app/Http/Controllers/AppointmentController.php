@@ -57,7 +57,7 @@ class AppointmentController extends Controller
         $id = $request->input('uid');
         $patients =  Patients::with('titles')
             ->select('patients.*', 'titles.id as title')
-            ->leftjoin('titles', 'patients.title', '=', 'titles.id')
+            ->leftJoin('titles', 'patients.title', '=', 'titles.id')
             ->where('patients.id', '=', $id)
             ->get();
 
@@ -131,7 +131,7 @@ class AppointmentController extends Controller
 
             $currentDate = Carbon::today();
 
-            $waiting_list =  Appoinment::with('patients')->select('appoinments.*', 'patients.name as patientname')->leftjoin('patients', 'appoinments.patient_id', '=', 'patients.id')
+            $waiting_list =  Appoinment::with('patients')-> select('appoinments.*', 'patients.name as patientname')->leftjoin('patients', 'appoinments.patient_id', '=', 'patients.id')
                 ->where('appoinments.status', '=', "0")
                 ->where('appoinments.date', '=', $currentDate)
                 ->where('patients.status', '=', '0')
@@ -170,7 +170,7 @@ class AppointmentController extends Controller
 
             $finished_list =  Appoinment::with('patients')
                 ->select('appoinments.*', 'patients.name as patientname')
-                ->leftjoin('patients', 'appoinments.patient_id', '=', 'patients.id')
+                ->leftJoin('patients', 'appoinments.patient_id', '=', 'patients.id')
                 ->where('appoinments.status', '=', "1")
                 ->where('appoinments.date', '=', $currentDate)
                 ->where('patients.status', '=', '0')
@@ -196,8 +196,7 @@ class AppointmentController extends Controller
             $nextVisitDate = date('Y-m-d', strtotime($request->next_visit_date));
 
 
-            $date =  Appoinment::with('patients')
-                ->select('appoinments.*')
+            $date =  Appoinment::all()
                 ->where('appoinments.patient_id', '=', $request->patient_id)
                 ->where('appoinments.date', '=', $currentDate)->first();
             $channel_date = $date->date;
@@ -290,7 +289,7 @@ class AppointmentController extends Controller
                 ->where('patient_id', $request->patient_id)
                 ->where('date', $currentDate)->first();
 
-            $appoinmentRecord->status = 1;
+            $appoinmentRecord->status = '1';
             $appoinmentRecord->save();
 
 

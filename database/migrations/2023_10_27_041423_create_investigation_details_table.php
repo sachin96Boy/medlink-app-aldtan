@@ -20,7 +20,7 @@ class CreateInvestigationDetailsTable extends Migration
             $table->string('investigation_details')->nullable;
             $table->integer('treatment');
             $table->integer('medicalTest')->nullable;
-            $table->date('nextVisitDate')->nullable;
+            $table->date('next_visit_date')->nullable;
             $table->double('amount')->nullable;
             $table->string('comment');
             $table->date('channel_date');
