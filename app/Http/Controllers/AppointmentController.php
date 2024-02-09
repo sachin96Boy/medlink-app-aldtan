@@ -198,8 +198,8 @@ class AppointmentController extends Controller
 
 
             $date =  Appoinment::all()
-                ->where('appoinments.patient_id', '=', $request->patient_id)
-                ->where('appoinments.date', '=', $currentDate)->first();
+                ->where('patient_id', '=', $request->patient_id)
+                ->where('date', '=', $currentDate)->first();
             $channel_date = $date->date;
             $data = [
                 'patient_id' => $request->patient_id,
@@ -295,7 +295,7 @@ class AppointmentController extends Controller
 
 
             $appoinments =  Appoinment::with('patients')
-                ->select('appoinments.*', DB::raw('patients.name as patientname'), DB::raw('patients.id as patientid'))
+                ->select('appoinments.*','patients.name as patientname', 'patients.id as patientid')
                 ->leftjoin('patients', 'appoinments.patient_id', '=', 'patients.id')
                 ->where('appoinments.status', '=', '0')
                 ->where('appoinments.date', '=', $currentDate)
