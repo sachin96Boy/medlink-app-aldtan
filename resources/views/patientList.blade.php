@@ -80,18 +80,19 @@
                     <td>{{ $patient->mobile }}</td>
                     <td class="project-actions ">
                         <div class="d-flex flex-column align-items-center flex-lg-row gap-2">
-                            <div class="d-flex flex-row gap-2"><a
-                                    href="{{ route('patienteditviewtable', $patient->id) }}" title="Edit">
-                                    <button class="btn btn-outline-dark"> <i class="fa fa-edit"></i>Edit</button>
-                                </a>
-                                <a href="{{ route('patientdelete', $patient->id) }}" title="Delete">
-                                    <button class="btn btn-outline-danger"> <i class="fa fa-trash"></i>Delete</button>
-                                </a>
-                            </div>
                             <div class="d-flex flex-row gap-2">
                                 <a href="{{ route('appointment.add', $patient->id) }}" title="Appointment">
                                     <button class="btn btn-outline-dark"> <i
                                             class="fa fa-stethoscope"></i>Appointment</button>
+                                </a>
+                                <a href="{{ route('patienteditviewtable', $patient->id) }}" title="Edit">
+                                    <button class="btn btn-outline-dark"> <i class="fa fa-edit"></i>Edit</button>
+                                </a>
+
+                            </div>
+                            <div class="d-flex flex-row gap-2">
+                                <a href="{{ route('patientdelete', $patient->id) }}" title="Delete">
+                                    <button class="btn btn-outline-danger"> <i class="fa fa-trash"></i>Delete</button>
                                 </a>
                                 <a href="{{ route('appointment.history', $patient->id) }}" title="History">
                                     <button class="btn btn-outline-info"> <i class="fa fa-book"> </i>History</button>

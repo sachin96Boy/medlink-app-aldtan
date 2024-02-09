@@ -1,7 +1,4 @@
 
-<!--///////////////////not using this code.this is a copy///////////////////////////////-->
-
-
 <!DOCTYPE html>
 <html lang="en">
 

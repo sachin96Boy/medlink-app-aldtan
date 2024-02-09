@@ -27,7 +27,7 @@
                                 </button></div>
                         @enderror
                         <div class="d-flex flex-column flex-md-row align-items-center justify-content-start">
-                            <div class=" d-flex  col-md-5">
+                            <div class="d-flex  col-md-6 text-start" style="margin-left:-30px;" >
                                 <input style=" font-size: 12px;" type="text" class="form-control" id="keyword"
                                     name="keyword" placeholder="Keyword for Search" value="">
 
