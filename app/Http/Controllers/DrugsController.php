@@ -42,7 +42,7 @@ class DrugsController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return redirect()->back()->with('error','something error');
+                return redirect()->back()->with('error', 'something error');
             }
 
             $drugName = $request->input('drug_name');
@@ -58,11 +58,9 @@ class DrugsController extends Controller
             ];
 
             Drugs::create($data);
-            //dd($data);
 
             session()->flash('message', 'Successfully Added Drug !');
             return redirect()->back()->with('success', 'Successfully Added Drug !');
-
         } catch (Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }

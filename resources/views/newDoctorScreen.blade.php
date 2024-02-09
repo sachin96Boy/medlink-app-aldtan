@@ -9,11 +9,28 @@
     @include('header')
 </head>
 
+<style>
+    body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        /* Ensure the page takes up the full viewport height */
+        margin: 0;
+        /* Remove default body margin */
+    }
+
+    .center-container {
+        text-align: center;
+    }
+</style>
+
+
 <body class="bg-gray-100">
     @extends('layouts.app')
     @section('content')
         <div class="p-3 container">
-             @error('keyword')
+            @error('keyword')
                 <div role="alert" id="alert-dialog" class="alert alert-danger alert-dismissible fade show flex-end">
                     Name or phone required<button id='close-alert' type="button" class="close" data-dismiss="alert"
                         aria-label="Close">
@@ -23,33 +40,30 @@
             <!--Waiting list , Completed Buttons and Search bar-->
             <div class="d-flex flex-column flex-md-row align-items-center justify-content-between">
                 <!-- waiting List Button -->
-                <div class="col-md-3 text-center">
+                <div class="col-md-2 text-center">
                     <a href="{{ route('waiting.list') }}"><button class="btn btn-primary"
                             style="border-radius: 10px; background-image: linear-gradient(to bottom, #7900ff, #2b8ffc);box-shadow: 1px 5px 1px rgba(0, 0, 0, 0.1);">Waiting
                             List</button></a>
                 </div>
                 <!-- search Bar -->
-                <div class="search-container text-center">
-                    <form action="{{ route('appointment_search') }}" method="POST">
+                <div class="search-container text-center d-flex justify-content-md-center align-items-md-center">
+                    <form action="{{ route('appointment_search') }}" method="POST" class="container">
                         @csrf
-                        <div class="container">
-                            <div class="row">
-                                <div class="search-container text-center p-0 align-self-start">
-                                    <div class="input-group">
-                                        <input style="font-size: 12px;" type="search" name="keyword" id="keyword"
-                                            class="form-control" placeholder="Type Name or Phone Number" />
-                                        <button style="height: 32px;" id="search-button" type="submit"
-                                            class="btn btn-primary">
-                                            <i class="fas fa-search"></i>
-                                        </button>
-                                        <a href="{{ route('home') }}">
-                                            <button style="height: 32px;" id="search-button" type="button"
-                                                class="btn btn-primary">
-                                                <i class="fas fa-repeat"></i>
-                                            </button>
-                                        </a>
-                                    </div>
-                                </div>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <input style="font-size: 12px;width:40dvh;" type="search" name="keyword" id="keyword" class="form-control" placeholder="Type Name or Phone Number" />
+                            </div>
+                            <div class="col-md-2">
+                                <button style="height: 32px;" id="search-button" type="submit" class="btn btn-primary" title="search"> 
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                            <div class="col-md-2">
+                                <a href="{{ route('home') }}">
+                                    <button style="height: 32px;" id="search-button" type="button" class="btn btn-primary" title="reset">
+                                        <i class="fas fa-repeat" ></i>
+                                    </button>
+                                </a>
                             </div>
                         </div>
                     </form>
@@ -68,8 +82,8 @@
                             <div class="carousel-inner" style=" max-width:100%;height:auto;">
                                 <form>
                                     <!-- NOW button  (this button only refresh the page)-->
-                                    <div class="row my-3">
-                                        <div class="col text-center">
+                                    <div class="row my-3 mr-5">
+                                        <div class="text-center">
                                             <button class="btn btn-info"
                                                 style="border-radius: 30px; background-image: linear-gradient(to bottom, #4faafd, #34cfff);border:none;box-shadow: 1px 5px 1px rgba(0, 0, 0, 0.1);">NOW</button>
                                         </div>
@@ -78,7 +92,7 @@
                                     <div class="row justify-content-center align-items-center text-center"
                                         style=" max-width:100%;height:auto;">
                                         <!--  Previous Button -->
-                                        <div class="col-md-2 ">
+                                        <div class="col-md-2 text-center">
                                             <div class="row justify-content-center align-items-center text-center "
                                                 href="#myCarousel" data-slide="prev">
                                                 <button class="btn"

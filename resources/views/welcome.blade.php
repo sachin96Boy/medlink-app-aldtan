@@ -395,6 +395,7 @@
             font-family: 'Nunito';
         }
     </style>
+    <link rel="icon" href="{{ asset('assets/img/browser.png') }}">
     <!--     Fonts and icons     -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
     <!-- Nucleo Icons -->
