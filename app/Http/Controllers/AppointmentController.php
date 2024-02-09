@@ -8,7 +8,8 @@ use App\Models\Patients;
 use App\Models\Appoinment;
 use App\Models\Patient;
 use App\Models\InvestigationDetails;
-use PDF;
+// use PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Exception;
 
@@ -55,13 +56,16 @@ class AppointmentController extends Controller
         $tableInvesti = json_decode($request->input('tableInvesti'), true);
 
         $id = $request->input('uid');
-        $patients =  DB::table('patients')
-            ->select('patients.*', DB::raw('titles.id as title'))
-            ->leftjoin('titles', 'patients.title', '=', 'titles.id')
+        $patients =  Patients::with('titles')
+            ->select('patients.*', 'titles.id as title')
+            ->leftJoin('titles', 'patients.title', '=', 'titles.id')
             ->where('patients.id', '=', $id)
             ->get();
-        $pdf = Pdf::loadView('test2', ['treatment' => $treatment, 'comment' => $comment, 'investigation' => $investigation,
-        'patients' => $patients, 'tableData' => $tableData, 'tableoutData' => $tableoutData, 'tableMedical' => $tableMedical, 'tableInvesti' => $tableInvesti]);
+
+        $pdf = Pdf::loadView('test2', [
+            'treatment' => $treatment, 'comment' => $comment, 'investigation' => $investigation,
+            'patients' => $patients, 'tableData' => $tableData, 'tableoutData' => $tableoutData, 'tableMedical' => $tableMedical, 'tableInvesti' => $tableInvesti
+        ]);
         return $pdf->stream();
     }
     public function history($id)
@@ -82,7 +86,6 @@ class AppointmentController extends Controller
 
             $appointment_list = Appoinment::with('patients')->select('appoinments.*', 'patients.name as patientname')->leftJoin('patients', 'appoinments.patient_id', '=', 'patients.id')->where('appoinments.date', '=', $currentDate)
                 ->where('patients.status', '=', '0')
-                //add the get function 
                 ->where('appoinments.active', '=', '0')->get();
             return view('appointmentListView', ['appointment_list' => $appointment_list]);
         } catch (Exception $e) {
@@ -92,35 +95,32 @@ class AppointmentController extends Controller
 
     public function add($id)
     {
-
         try {
             $currentDate = Carbon::today();
             $currentTime = Carbon::now();
 
-            $app_no =  Appoinment::all('appointment_no')->where('date','=',$currentDate)->sortByDesc('appoinment_no')->first();
-            $patientName =Patients::all('name')->where('id', $id);
+            $app_no = Appoinment::all()->where('date', '=', $currentDate)->last();
+            $patient = Patients::find($id);
 
             if ($app_no !== null) {
-                $val = $app_no->appointment_no;
-                $appointment_no = $val + 1;
+                $appointment_no = $app_no->appointment_no + 1;
             } else {
                 $appointment_no = 1;
             }
 
-
             $data = [
                 'appointment_no' => $appointment_no,
                 'patient_id' => $id,
-                'patient_name' => $patientName,
+                'patient_name' => $patient->name, // Extracting name from the patient object
                 'date' => $currentDate,
                 'appdate_time' => $currentTime,
                 'status' => '0',
             ];
+
             Appoinment::create($data);
             session()->flash('message', 'Appointment Successfully Saved ..!');
-            return redirect()->back()->with('success', 'Appointment Successfuly Saved ..!');
+            return redirect()->back()->with('success', 'Appointment Successfully Saved ..!');
         } catch (Exception $e) {
-
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
@@ -132,11 +132,12 @@ class AppointmentController extends Controller
 
             $currentDate = Carbon::today();
 
-            $waiting_list =  Appoinment::with('patients')->select('appoinments.*','patients.name as patientname')->leftjoin('patients', 'appoinments.patient_id', '=', 'patients.id')
-            ->where('appoinments.status', '=', "0")
-            ->where('appoinments.date', '=', $currentDate)
-            ->where('patients.status', '=', '0')
-            ->where('appoinments.active', '=', '0');
+            $waiting_list =  Appoinment::with('patients')-> select('appoinments.*', 'patients.name as patientname')->leftjoin('patients', 'appoinments.patient_id', '=', 'patients.id')
+                ->where('appoinments.status', '=', "0")
+                ->where('appoinments.date', '=', $currentDate)
+                ->where('patients.status', '=', '0')
+                ->where('appoinments.active', '=', '0')->get();
+
 
             return view('appointmentWaitingList', ['waiting_list' => $waiting_list]);
         } catch (Exception $e) {
@@ -146,13 +147,13 @@ class AppointmentController extends Controller
 
     public function cancel($id)
     {
-
         try {
             $currentDate = Carbon::today();
-            DB::table('appoinments')
-                ->where('date', $currentDate)
-                ->where('appointment_no', $id)
-                ->update(['active' => '1']);
+            $appoinment = Appoinment::all()->where('date', '=', $currentDate)->where('appointmnt_no', '=', $id)->first();
+
+            $appoinment->active = '1';
+            $appoinment->save();
+
 
             // Redirect back to the previous page
             return back();
@@ -168,14 +169,15 @@ class AppointmentController extends Controller
 
             $currentDate = Carbon::today();
 
-            $finished_list =  DB::table('appoinments')
-                ->select('appoinments.*', DB::raw('patients.name as patientname'))
-                ->leftjoin('patients', 'appoinments.patient_id', '=', 'patients.id')
+            $finished_list =  Appoinment::with('patients')
+                ->select('appoinments.*', 'patients.name as patientname')
+                ->leftJoin('patients', 'appoinments.patient_id', '=', 'patients.id')
                 ->where('appoinments.status', '=', "1")
                 ->where('appoinments.date', '=', $currentDate)
                 ->where('patients.status', '=', '0')
                 ->where('appoinments.active', '=', '0')
                 ->get();
+
 
             return view('appointmentFinishedList', ['finished_list' => $finished_list]);
         } catch (Exception $e) {
@@ -194,8 +196,8 @@ class AppointmentController extends Controller
 
             $nextVisitDate = date('Y-m-d', strtotime($request->next_visit_date));
 
-            $date =  DB::table('appoinments')
-                ->select('appoinments.*')
+
+            $date =  Appoinment::all()
                 ->where('appoinments.patient_id', '=', $request->patient_id)
                 ->where('appoinments.date', '=', $currentDate)->first();
             $channel_date = $date->date;
@@ -282,18 +284,17 @@ class AppointmentController extends Controller
             }
 
 
-            $Appoinment = [
-                'status' => 1
-            ];
 
-            DB::table('appoinments')
+
+            $appoinmentRecord = Appoinment::all()
                 ->where('patient_id', $request->patient_id)
-                ->where('date', $currentDate)
-                ->update($Appoinment);
+                ->where('date', $currentDate)->first();
+
+            $appoinmentRecord->status = '1';
+            $appoinmentRecord->save();
 
 
-
-            $appoinments =  DB::table('appoinments')
+            $appoinments =  Appoinment::with('patients')
                 ->select('appoinments.*', DB::raw('patients.name as patientname'), DB::raw('patients.id as patientid'))
                 ->leftjoin('patients', 'appoinments.patient_id', '=', 'patients.id')
                 ->where('appoinments.status', '=', '0')

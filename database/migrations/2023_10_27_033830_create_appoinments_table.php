@@ -17,7 +17,7 @@ class CreateAppoinmentsTable extends Migration
             $table->id();
             $table->integer('appointment_no');
             $table->integer('patient_id');
-            $table->integer('patient_name');
+            $table->string('patient_name');
             $table->integer('finger_prient')->default(0);
             $table->date('date');
             $table->boolean('status')->default(false);

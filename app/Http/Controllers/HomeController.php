@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use App\Models\InvestigationDetails;
 use Illuminate\Http\Request;
 use App\Models\Appoinment;
@@ -12,6 +15,8 @@ use App\Models\medicalTests;
 use App\Models\Patients;
 use App\Models\reccomandedOpdDrugs;
 use App\Models\reccomandOutsideDrugs;
+use App\Models\terms;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Exception;
@@ -59,7 +64,7 @@ class HomeController extends Controller
 
             $currentDate = Carbon::today();
             $diagnostic_categories =  DiagnosticCategory::all()->where('status', '=', '0');
-            
+
             $patientDtl =  Patients::select('patients.*', 'titles.title as title')->leftJoin('titles', 'patients.title', '=', 'titles.id')->where('patients.id', '=', $id)->get();
 
             $investigationDel =  InvestigationDetails::all()->where('patient_id', '=', $id)->where('channel_date', '=', $currentDate);
@@ -70,7 +75,6 @@ class HomeController extends Controller
 
             $names = Patients::all()->where('status', '=', '0')->pluck('name', 'id');
 
-
             $investigation_history =  investigationHistory::all()->where('patient_id', '=', $id)->where('appointment_date', '=', $currentDate);
 
             $reccomanded_opd_drugs =  reccomandedOpdDrugs::all()->where('patient_id', '=', $id)->where('appoinment_date', '=', $currentDate);
@@ -80,7 +84,9 @@ class HomeController extends Controller
 
             $reccomanded_medical_test =  medicalTests::all()->where('patient_id', '=', $id)->where('appoinment_date', '=', $currentDate);
 
-            return view('newPatientDashBoardv1', ['diagnostic_categories' => $diagnostic_categories, 'patientDtl' => $patientDtl, 'drugs' => $drugs, 'names' => $names, 'medical_tests' => $medical_tests, 'investigationDel' => $investigationDel, 'investigation_history' => $investigation_history, 'reccomanded_opd_drugs' => $reccomanded_opd_drugs, 'reccomanded_outside_drugs' => $reccomanded_outside_drugs, 'reccomanded_medical_test' => $reccomanded_medical_test]);
+            $terms = terms::all();
+
+            return view('newPatientDashBoardv1', ['diagnostic_categories' => $diagnostic_categories, 'patientDtl' => $patientDtl, 'drugs' => $drugs, 'names' => $names, 'medical_tests' => $medical_tests, 'investigationDel' => $investigationDel, 'investigation_history' => $investigation_history, 'reccomanded_opd_drugs' => $reccomanded_opd_drugs, 'reccomanded_outside_drugs' => $reccomanded_outside_drugs, 'reccomanded_medical_test' => $reccomanded_medical_test, 'terms'=>$terms]);
         } catch (Exception $e) {
             return response()->json([
                 'error' => $e->getMessage()
@@ -175,6 +181,101 @@ class HomeController extends Controller
             return response()->json([
                 'error' => $e->getMessage()
             ]);
+        }
+    }
+
+    public function updateProfilePicture(Request $request)
+    {
+
+        try {
+            $request->validate([
+                'profile_picture' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // 2048 kilobytes = 2 megabytes
+            ]);
+
+            $user = Auth::user();
+
+            if ($request->hasFile('profile_picture')) {
+                // Check if the file size exceeds the limit
+                $maxFileSize = 2048 * 1024; // Convert to kilobytes
+                if ($request->file('profile_picture')->getSize() > $maxFileSize) {
+                    return redirect()->route('profile')->with('error', 'File size exceeds the limit.');
+                }
+
+                // Delete existing profile picture
+                if ($user->profile_picture) {
+                    Storage::disk('public')->delete($user->profile_picture);
+                }
+
+                // Store new profile picture
+                $profilePicturePath = $request->file('profile_picture')->store('profile_pictures', 'public');
+                $user->profile_picture = $profilePicturePath;
+                $user->save();
+            }
+
+            return redirect()->route('profile')->with('success', 'Profile picture updated successfully.');
+        } catch (Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+    // need to implement
+    public function profile()
+    {
+        return view('profile.index');
+    }
+
+    public function update(Request $request)
+
+    {
+        try {
+            $currentDate = Carbon::today();
+
+            $Patients = User::find($request->id);
+            $Patients->update([
+                'name' => $request->name,
+                'age' => $request->age,
+                'mid' => $request->mid,
+                'nic' =>  $request->nic,
+                'number' => $request->number,
+            ]);
+
+            $appoinments =  Appoinment::with('patients')->select('appoinments.*', 'patients.name as patientname', 'patients.id as patientid')->leftJoin('patients', 'appoinments.patient_id', '=', 'patients.id')->where('appoinments.status', '=', '0')
+                ->where('appoinments.date', '=', $currentDate)
+                ->where('patients.status', '=', '0')
+                ->where('appoinments.active', '=', '0')
+                ->get();
+            return view('newDoctorScreen', ['appoinments' => $appoinments])->with('success', 'Successfully Updated User !');
+        } catch (Exception $e) {
+
+            return view('newDoctorScreen', ['appoinments' => $appoinments])->with('error', $e->getMessage());
+        }
+    }
+
+    public function printOPd($id)
+    {
+
+        try {
+            $currentDate = Carbon::today();
+
+
+            $amount =  InvestigationDetails::all(['amount'])->where('patient_id', '=', $id)->where('channel_date', '=', $currentDate);
+
+
+            $drug_history = reccomandedOpdDrugs::all(['drug', 'dose', 'period', 'terms'])->where('appointmnt_date', '=', $currentDate)->where('patient_id', '=', $id);
+
+
+
+            $patients =  Patients::all()->where('id', '=', $id);
+
+
+
+            $appId = Appoinment::all()->where('patient_id', '=', $id)->where('date', '=', $currentDate);
+
+
+            return view('opd_report', ['opdReport' => $drug_history, 'patients' => $patients, 'amount' => $amount, 'appoi' => $appId]);
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 }

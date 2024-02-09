@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-    
+
 
 <head> @include('header') <title></title>
 
@@ -76,12 +76,9 @@
     @section('content')
         <div class="container" >
             <div class="row">
-               
+
                 <a href="{{ route('drugs_view') }}"> <button style="margin-left: 45px; border-radius: 30px; background-image: linear-gradient(to bottom, #7900ff, #2b8ffc);box-shadow: 1px 5px 1px rgba(0, 0, 0, 0.1);" type="button"
                         class="btn  btn-info btn-sm"><b> View Drugs List</b></button></a>
-                        
-                       
-
 
                 <div class="col-12 overflow-scroll" style="height: 550px;">
 
@@ -91,13 +88,13 @@
                             <label style="font-size: 12px;"for="drug_name" class="col-sm-2 col-form-label">Drugs
                                 <span class="text-danger">*</span></label>
                             <div class="col-sm-10">
-                                <input  style=" font-size: 12px;" type="text" class="form-control" id="drug_name" name="drug_name" required>
+                                <input  style=" font-size: 12px;" type="text" class="form-control" placeholder="Enter the Drug Name" id="drug_name" name="drug_name" required >
                             </div>
                         </div>
 
 
                         <button type="submit" style="margin-left: 45px; border-radius: 30px; background-image: linear-gradient(to bottom, #7900ff, #2b8ffc);box-shadow: 1px 5px 1px rgba(0, 0, 0, 0.1);" class="btn  btn-info btn-sm"><b>Add Drug</b> <span aria-hidden="true">&times;</span>
-                         </button>
+                        </button>
 
 
                     </form>

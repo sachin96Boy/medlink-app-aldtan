@@ -30,10 +30,10 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($appointment_list as $appointment)
+                                @foreach ($appointment_list as $appointment )
                                     <tr style="font-size: 13px;">
                                         <td>{{ $appointment->appointment_no }}</td>
-                                        <td>{{ $appointment->date }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($appointment->date)->format('d/m/Y')}}</td>
                                         <td>{{ $appointment->patientname }}</td>
                                         <td><?php if($appointment->status == 0){ ?>
                                             Active

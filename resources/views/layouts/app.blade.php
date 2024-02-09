@@ -21,6 +21,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"
         integrity="sha512-vKMx8UnXk60zUwyUnUPM3HbQo8QfmNx7+ltw8Pm5zLusl1XIfwcxo8DbWCqMGKaWeNxWA8yrx5v3SaVpMvR3CA=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- SilverBoxAlert -->
+    <link href="{{ asset('silverBox.min/silverBox.min.css') }}" rel="stylesheet" />
+    <script src="{{ asset('silverBox.min/silverBox.min.js') }}"></script>
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
@@ -325,13 +328,28 @@
                     @endif
                 @else
                     <div class="nav-item  dropdown  show d-flex align-items-center">
-                        <i class="fa-solid fa-user"></i>
                         <a id="navbarDropdown" class="nav-link gap-2 dropdown-toggle" href="#" role="button"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            {{ Auth::user()->name }}
+                            @if (Auth::user()->profile_picture)
+                                <img src="{{ asset('storage/app/public/' . Auth::user()->profile_picture) }}"
+                                    alt="Profile Picture" class="rounded-circle"
+                                    style="width: 30px; height: 30px; object-fit: cover;">
+                            @else
+                                {{ Auth::user()->name }}
+                            @endif
                         </a>
 
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="{{ route('profile') }}">
+                                <div class="d-flex align-items-center">
+                                    @if (Auth::user()->profile_picture)
+                                        <img src="{{ asset('storage/app/public/' . Auth::user()->profile_picture) }}"
+                                            alt="Profile Picture" class="mr-2 rounded-circle"
+                                            style="width: 40px; height: 40px; object-fit: cover;">
+                                    @endif
+                                    <span>{{ Auth::user()->name }}</span>
+                                </div>
+                            </a>
                             <a class="dropdown-item" href="{{ route('logout') }}"
                                 onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">

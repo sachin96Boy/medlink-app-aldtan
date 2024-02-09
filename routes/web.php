@@ -117,6 +117,21 @@ Route::get('/view_patient_cancel/{id}', [App\Http\Controllers\AppointmentControl
 Route::get('/appointmenthistory/{id}', [App\Http\Controllers\AppointmentController::class, 'history'])->name('appointment.history');
 Route::get('/helps', [App\Http\Controllers\HomeController::class, 'helps'])->name('helps');
 
+Route::get('/medical_certificate/{id}/{address1}/{address2}/{address3}/{treatmentrep}/{amountrep}/{date1}/{date2}', [App\Http\Controllers\PatientController::class, 'medical_certificate'])->name('medical_certificate');
+Route::get('/medical_certificate2/{id}/{address1}/{address2}/{address3}/{treatmentrep}/{amountrep}/{date1}/{date2}', [App\Http\Controllers\PatientController::class, 'medical_certificate2'])->name('medical_certificate2');
+
+
+
+Route::post('/medical_repo', [App\Http\Controllers\PatientController::class, 'medical_test_report'])->name('medical_repo');
+Route::post('/opd_report', [App\Http\Controllers\PatientController::class, 'opd_report'])->name('opd_report');
+Route::post('/out_report', [App\Http\Controllers\PatientController::class, 'out_report'])->name('out_report');
+
+
+
+Route::get('/profile', [App\Http\Controllers\HomeController::class,  'profile'])->name('profile');
+Route::post('/profile/update-picture', [App\Http\Controllers\HomeController::class,  'updateProfilePicture'])->name('updateProfilePicture');
+Route::post('/profile/updateUser', [App\Http\Controllers\HomeController::class,  'update'])->name('updateUser');
+
 
 
 
