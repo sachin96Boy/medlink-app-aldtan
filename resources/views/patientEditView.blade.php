@@ -42,9 +42,9 @@
                                 <select style=" font-size: 12px; background-color: #dbe9ee;" onchange="familyName()"
                                     style=" font-size: 12px;" class="form-control" id="family_names" name="family_names"
                                     rows="4">
-                                    @foreach ($famname as $famnam)
-                                        <option {{ $patient->family_name == $famnam->family_name ? 'selected' : '' }}
-                                            value="{{ $famnam->family_name }}">{{ $famnam->family_name }}</option>
+                                    @foreach ($famname as $famnam => $val)
+                                        <option {{ $patient->family_name == $famnam ? 'selected' : '' }}
+                                        value="{{ $famnam }}">{{ $famnam }}</option>
                                     @endforeach
                                 </select>
 
