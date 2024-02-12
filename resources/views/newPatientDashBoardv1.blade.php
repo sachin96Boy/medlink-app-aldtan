@@ -161,6 +161,49 @@
             font-size: 12px;
         }
 
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            background-color: rgb(0, 0, 0);
+            /* Fallback color */
+            background-color: rgba(0, 0, 0, 0.4);
+            /* Black w/ opacity */
+        }
+
+        /* Modal Content/Box */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 50%;
+            /* Could be more or less, depending on screen size */
+            height: 35dvh;
+            /* Adjust as needed */
+        }
+
+        /* The Close Button */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
 
 
 
@@ -679,28 +722,28 @@ $conn->close();
                                             <!-- Medical test and Treatments-->
                                             <div class="d-flex flex-column gap-2 m-2">
                                                 <!--Treatments-->
-                                                <div class="p-2" style="height:50%">
-                                                    {{-- start wrapper --}}
-                                                    <div class="container p-2"
-                                                        style="background-color: #EBEFF3; border-radius:10px;height:50%;">
-                                                        <!--Topic-->
-                                                        <div class="row text-center">
-                                                            <b>TREATMENTS<label for="help">[F3]</label></b>
+
+                                                {{-- start wrapper --}}
+                                                <div class="container p-2"
+                                                    style="background-color: #EBEFF3; border-radius:10px;height:50%;">
+                                                    <!--Topic-->
+                                                    <div class="row text-center">
+                                                        <b>TREATMENTS<label for="help">[F3]</label></b>
 
 
-                                                        </div>
-                                                        <!-- TextArea -->
-                                                        <div class="text-center">
-                                                            <textarea id="treatment" name="treatment" rows="5" cols="23"
-                                                                style="line-height: 1.4; font-size: 13px; background-color: #EBEFF3;width:100%; height:28.6dvh;border-style: none;border: 0px solid #EBEFF3;margin-bottom:5px;"> 
+                                                    </div>
+                                                    <!-- TextArea -->
+                                                    <div class="text-center">
+                                                        <textarea id="treatment" name="treatment" rows="5" cols="23"
+                                                            style="line-height: 1.4; font-size: 13px; background-color: white;width:100%; height:33.8dvh;border-style: none;border: 0px solid #EBEFF3;margin-bottom:5px;"> 
                                                     @if ($investigationDel->isNotEmpty())
 {{ $investigationDel->last()->treatment }}
 @endif
                                                 </textarea>
-                                                        </div>
                                                     </div>
-                                                    {{-- end of wrapper --}}
                                                 </div>
+                                                {{-- end of wrapper --}}
+
                                                 <div style="height:50%">
                                                     <!--Medical Test-->
                                                     <div class="p-2"
