@@ -71,8 +71,8 @@ class DiagnosticCategoriesController extends Controller
             $diagnosticCategory = diagnosticCategory::find($request->id);
             $diagnosticCategory->status = '1';
 
-            session()->flash('message', 'Successfully Deleted diagnostic Category !');
             $diagnosticCategory->save();
+            session()->flash('message', 'Successfully Deleted diagnostic Category !');
             return redirect()->back()->with('success', 'Successfully Deleted diagnostic Category !');
         } catch (Exception $e) {
 
@@ -87,8 +87,8 @@ class DiagnosticCategoriesController extends Controller
             $diagnosticCategory->status = '0';
 
 
-            session()->flash('message', 'Successfully Actived diagnostic Category !');
             $diagnosticCategory->save();
+            session()->flash('message', 'Successfully Actived diagnostic Category !');
             return redirect()->back()->with('success', 'Successfully Actived diagnostic Category !');
         } catch (Exception $e) {
 
