@@ -139,23 +139,20 @@ class DrugsController extends Controller
                 'drug_name' => 'required',
             ]);
 
-            $drugs_list = DB::table('drugs');
 
             if (isset($request->drug_name)) {
                 $drug_name = $request->drug_name;
-                $drugs_list = $drugs_list->where("drugs.drug_name", 'LIKE', '%' . $drug_name . '%');
+                $drugs_list = Drugs::all()->where("drug_name", 'LIKE', '%' . $drug_name . '%');
             }
-            $drugs_list = $drugs_list->where("drugs.status", "=", "0")
-                ->select('drugs.*')
-                ->orderBy('drugs.drug_name', 'asc')
-                ->where('drugs.status', '=', "0")
-                ->get();
+            $drugs_list = $drugs_list->where("status", "=", "0")
+                ->sortBy('drug_name')
+                ->where('status', '=', "0");
+                -
 
-            $drugs_list_deleted =  DB::table('drugs')
-                ->select('drugs.*')
-                ->orderBy('drugs.drug_name', 'asc')
-                ->where('drugs.status', '=', "1")
-                ->get();
+            $drugs_list_deleted =  Drugs::all()
+                ->sortBy('drug_name')
+                ->where('status', '=', "1");
+                
             return view('drugsList', ['drugs_list' => $drugs_list, 'drugs_list_deleted' => $drugs_list_deleted]);
         } catch (Exception $e) {
             return response()->json([

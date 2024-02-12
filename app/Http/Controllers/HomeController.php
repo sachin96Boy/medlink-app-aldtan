@@ -151,8 +151,8 @@ class HomeController extends Controller
             $mytime = Carbon::today();
             $currentDate = $mytime->format('Y-m-d');
 
-            $appoinments = DB::table('appoinments')
-                ->leftjoin('patients', 'appoinments.patient_id', '=', 'patients.id');
+            $appoinments = Appoinment::all()
+                ->leftJoin('patients', 'appoinments.patient_id', '=', 'patients.id');
 
             if (isset($request->keyword)) {
                 $keyword = $request->keyword;

@@ -51,10 +51,10 @@ class MedicalTestController extends Controller
     public function  medical_test_list()
     {
         try {
-            $medical_test_list =  MedicalTest::all()->where('status','=','0');
-            
-            $medical_test_list_deleted =  MedicalTest::all()->where('status','=','1');
-           
+            $medical_test_list =  MedicalTest::all()->where('status', '=', '0');
+
+            $medical_test_list_deleted =  MedicalTest::all()->where('status', '=', '1');
+
             return view('medicalTestList', ['medical_test_list' => $medical_test_list, 'medical_test_list_deleted' => $medical_test_list_deleted]);
         } catch (Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
@@ -97,24 +97,20 @@ class MedicalTestController extends Controller
     {
         try {
 
-            $medical_test_list = DB::table('medical_tests');
-
             if (isset($request->test_name)) {
                 $test_name = $request->test_name;
-                $medical_test_list = $medical_test_list->where("medical_tests.test_name", 'LIKE', '%' . $test_name . '%');
+                $medical_test_list = MedicalTest::all()->where("test_name", 'LIKE', '%' . $test_name . '%');
             }
-            $medical_test_list = $medical_test_list->where("medical_tests.status", "=", "0")
-                ->select('medical_tests.*')
-                ->orderBy('medical_tests.test_name', 'asc')
-                ->where('medical_tests.status', '=', "0")
-                ->get();
+            $medical_test_list = $medical_test_list->where("status", "=", "0")
+                ->sortBy('test_name')
+                ->where('status', '=', "0");
+                
 
 
-            $medical_test_list_deleted =  DB::table('medical_tests')
-                ->select('medical_tests.*')
-                ->orderBy('medical_tests.test_name', 'asc')
-                ->where('medical_tests.status', '=', "1")
-                ->get();
+            $medical_test_list_deleted =  MedicalTest::all()
+                ->sortBy('test_name', 'asc')
+                ->where('status', '=', "1");
+
             return view('medicalTestList', ['medical_test_list' => $medical_test_list, 'medical_test_list_deleted' => $medical_test_list_deleted]);
         } catch (Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());

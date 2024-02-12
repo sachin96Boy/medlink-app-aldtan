@@ -91,11 +91,10 @@ class PatientController extends Controller
 
             if (isset($request->family_name)) {
                 $family_name = $request->family_name;
-                $patient_list = $patient_list->where("patients.family_name", $family_name);
+                $patient_list = $patient_list->where("patients.family_name",'=', $family_name);
             }
-            $patient_list = $patient_list->where("patients.status", "=", "0")
-                ->select('patients.*', 'titles.title as title')
-                ->get();
+            $patient_list = $patient_list->where("patients.status", "=", "0");
+                
 
 
             return view('patisentpopup', ['patient_list' => $patient_list, 'currentPatientId' => $request->currentPatientId]);
@@ -284,7 +283,7 @@ class PatientController extends Controller
 
 
             $patients =  Patients::all()
-                ->where('patients.id', "=", $id);
+                ->where('id', "=", $id);
 
             $investigation_details = InvestigationDetails::all()->where('patient_id', '=', $id);
             return view('investigationHistory', ['investigation_history' => $investigation_history, 'patients' => $patients, 'investigation_details' => $investigation_details]);
