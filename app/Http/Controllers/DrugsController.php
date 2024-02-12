@@ -47,9 +47,9 @@ class DrugsController extends Controller
 
             $drugName = $request->input('drug_name');
 
-            $drugId = Drugs::where('drug_name', $drugName)->count();
+            $drugavilCount = Drugs::where('drug_name', $drugName)->count();
 
-            if ($drugId > 0) {
+            if ($drugavilCount > 0) {
                 return redirect()->back()->with('error', 'This Drug Name already available');
             }
 
@@ -90,7 +90,16 @@ class DrugsController extends Controller
 
             $drug->save();
             session()->flash('message', 'Successfully Deleted Drug !');
-            return redirect()->back()->with('success', 'Successfully Deleted Drug !');
+            // check server code too on this
+            // it seems updated so that 
+            // it will return druglist page view insted
+            // of redirect
+
+            $drugs_list =  Drugs::all()->where('status', '=', '0')->sortBy('drug_name');
+
+            $drugs_list_deleted =  Drugs::all()->where('status', '=', '1')->sortBy('drug_name');
+
+            return view('drugsList',['drugs_list' => $drugs_list , 'drugs_list_deleted' => $drugs_list_deleted])->with('success', 'Successfully Deleted Drug !');
         } catch (Exception $e) {
 
             return redirect()->back()->with('error', $e->getMessage());
@@ -106,8 +115,13 @@ class DrugsController extends Controller
             $drug->status = '0';
 
             $drug->save();
+
+            $drugs_list =  Drugs::all()->where('status', '=', '0')->sortBy('drug_name');
+
+            $drugs_list_deleted =  Drugs::all()->where('status', '=', '1')->sortBy('drug_name');
+
             session()->flash('message', 'Successfully Actived drug..!');
-            return redirect()->back()->with('success', 'Successfully Actived drug..!');
+            return view('drugsList',['drugs_list' => $drugs_list , 'drugs_list_deleted' => $drugs_list_deleted])->with('success', 'Successfully Actived drug..!');
         } catch (Exception $e) {
 
             return redirect()->back()->with('error', $e->getMessage());
@@ -117,6 +131,8 @@ class DrugsController extends Controller
     public function drug_search(Request $request)
     {
 
+            // go through search parts so that
+            // it ill use models
         try {
 
             $validate = $request->validate([
