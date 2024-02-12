@@ -200,7 +200,6 @@ class AppointmentController extends Controller
 
     {
 
-
         try {
             $currentDate = Carbon::today();
 

@@ -148,36 +148,39 @@ class PatientController extends Controller
     }
 
     public function patient_list_search(Request $request)
-    {
+{
+    try {
+        /*$validate = $request->validate([
+            'keyword' => 'required',
+        ]);*/
 
-        try {
+        $famname =  Patients::all('family_name')
+            ->groupBy('family_name');
 
-            $validate = $request->validate([
-                'keyword' => 'required',
-            ]);
+        $patient_list = Patients::with('title')
+            ->join('titles', 'patients.title', '=', 'titles.id')
+            ->where('patients.status', '=', '0');
 
-            $famname =  Patients::all('family_name')->groupBy('family_name');
-
-            $patient_list = Patients::with('title')->join('titles', 'patients.title', '=', 'titles.id');
-
-            if (isset($request->keyword)) {
-                $keyword = $request->keyword;
-                $patient_list = $patient_list->where("patients.nic", 'LIKE', '%' . $keyword . '%');
-                $patient_list = $patient_list->where("patients.family_name", 'LIKE', '%' . $keyword . '%');
-                $patient_list = $patient_list->where("patients.name", 'LIKE', '%' . $keyword . '%');
-                $patient_list = $patient_list->where("patients.mobile", 'LIKE', '%' . $keyword . '%');
-                $patient_list = $patient_list->where("patients.address", 'LIKE', '%' . $keyword . '%');
-            }
-
-            $patient_list = $patient_list->where("patients.status", "=", "0")
-                ->select('patients.*', 'titles.title as title')
-                ->get();
-
-            return view('patientListView', ['famname' => $famname, 'patient_list' => $patient_list]);
-        } catch (Exception $e) {
-            return redirect()->back()->with('error', $e->getMessage());
+        if (isset($request->keyword)) {
+            $keyword = $request->keyword;
+            $patient_list->where(function($query) use ($keyword) {
+                $query->orWhere("patients.nic", 'LIKE', '%' . $keyword . '%')
+                    ->orWhere("patients.family_name", 'LIKE', '%' . $keyword . '%')
+                    ->orWhere("patients.name", 'LIKE', '%' . $keyword . '%')
+                    ->orWhere("patients.mobile", 'LIKE', '%' . $keyword . '%')
+                    ->orWhere("patients.address", 'LIKE', '%' . $keyword . '%');
+            });
         }
+
+        $patient_list = $patient_list
+            ->select('patients.*', 'titles.title as title')
+            ->get();
+
+        return view('patientListView', ['famname' => $famname, 'patient_list' => $patient_list]);
+    } catch (Exception $e) {
+        return redirect()->back()->with('error', $e->getMessage());
     }
+}
 
     public function edit_view($id)
     {
