@@ -46,13 +46,13 @@
     <br>
     <br>
     <div class="row px-3" style="padding-left: 5px;">
-        THIS IS CERTIFY THAT MR/MRS/MISS <b class="uppercase">{{$p->name}} </b>OF <b class="uppercase">{{$p->address}}</b> WAS UNDER MY MEDICALTREATMENT FOR <b class="uppercase">{{$treatmentrep}}</b> ON {{$date1}} AND CHARGED <b> {{$amountrep}}/=</b> RUPEES FOR THE TREATMENT , INVESTIGATION AND CONSULTATION.
+        This is certify that Mr/Mrs/Miss <b>{{$p->name}} </b>Of <b>{{$p->address}}</b> was under my medical treatment for <b>{{$treatmentrep}}</b> on {{$date1}} and charged <b> {{$amountrep}}/=</b> rupees for the treatment , investigation and consultation.
     </div>
     <br>
     <br>
     <table style="width: 100%;" class="px-3">
 <tr>
-<td style="width: 100%; text-align: right;"> THANK YOU, </td>
+<td style="width: 100%; text-align: right;"> Thank You, </td>
 </tr>
 <tr>
 <td style="width: 100%; text-align: right;">

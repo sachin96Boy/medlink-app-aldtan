@@ -50,7 +50,7 @@
                                 </button>
                             @else
                                 <!-- Enable the Appointment button -->
-                                <button class="btn btn-outline-dark" id="appbton">
+                                <button class="btn btn-outline-dark appbton" id="appbton">
                                     <a href="{{ route('appointment.add', $patient->id) }}" title="Appointment"
                                         class="appointment-link">
                                         <i class="fa fa-stethoscope"></i>Appointment
@@ -82,7 +82,7 @@
                         <div class="d-flex flex-column align-items-center flex-lg-row gap-2">
                             <div class="d-flex flex-row gap-2">
                                 <a href="{{ route('appointment.add', $patient->id) }}" title="Appointment">
-                                    <button class="btn btn-outline-dark"> <i
+                                    <button class="btn btn-outline-dark appbton"> <i
                                             class="fa fa-stethoscope"></i>Appointment</button>
                                 </a>
                                 <a href="{{ route('patienteditviewtable', $patient->id) }}" title="Edit">

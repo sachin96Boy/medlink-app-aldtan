@@ -100,7 +100,7 @@
             {{$numberOfDays}} days
             </div>
             <div class="row text-center">
-            medical leave for his her absence for duty.
+            medical leave for his/her absence for duty.
             </div>
             <div class="row text-center">
             This is produce as his/her request and not valid for the legal purposes.
@@ -114,20 +114,18 @@
                 <table style="width: 100%;">
                     <tr>
                         <td style="width: 50%; text-align: left;">
-                            <?php
-                                $currentDate = date('Y-m-d'); // Format: YYYY-MM-DD
-                                echo "<p>$currentDate</p>";
-                            ?>
+                           Date : {{ date('Y-m-d') }}
+                        
                         </td>
                         <td style="width: 50%; text-align: right; padding-right: 30px;">
-                            .................
+                            .........................
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            Date
+                            
                         </td>
-                        <td style="width: 50%; text-align: right; padding-right: 20px;">
+                        <td style="width: 50%; text-align: right; padding-right: 22px;">
                             Doctor in Charge
                         </td>
                     </tr>

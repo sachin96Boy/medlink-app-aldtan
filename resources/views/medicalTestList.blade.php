@@ -4,7 +4,45 @@
 <head>
     <title>Medical Tests</title>
     @include('header')
-
+    <style>
+        .table-container {
+            max-height: 50vh;
+            overflow-y: auto;
+        }
+    
+        #example1 {
+            background-color: #e6eef4;
+            border-collapse: collapse; /* Collapse borders to remove spacing between cells */
+            width: 100%;
+        }
+    
+        #example1 th,
+        #example1 td {
+            padding: 8px; /* Adjust the padding as needed */
+        }
+    
+        #example1 thead th {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+    
+        #example1 tbody tr {
+            font-size: 13px;
+        }
+    
+        #example1 tbody tr td:last-child {
+            white-space: nowrap;
+        }
+    
+        .project-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px; /* Adjust the gap between buttons */
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
 </head>
 
 <body class="g-sidenav-show  bg-gray-100">
@@ -68,10 +106,10 @@
                                                 <center>
                                                     <a href="{{ route('medicalTestEdit', ['id' => $medical_test->id]) }}" title="Edit"
                                                         onclick="return confirm('Are you sure you want to Edit this medical test?');">
-                                                        <button class="btn btn-outline-dark"> <i class="fa fa-pencil-square"></i> Edit</button>
+                                                        <button class=""> <i class="fa fa-pencil-square"></i> Edit</button>
                                                     </a>
                                                     <a href="{{ route('medicalTest.delete', ['id' => $medical_test->id]) }}" title="Delete" onclick="return confirm('Are you sure you want to delete this medical test?')">
-                                                        <button class="btn btn-outline-danger"> <i class="fa fa-trash"></i> Delete</button>
+                                                        <button class="" style="color: red"> <i class="fa fa-trash"></i> Delete</button>
                                                     </a>
                                                 </center>
                                             </td>
@@ -112,7 +150,7 @@
                                             <td class="project-actions">
                                                 <center>
                                                     <a href="{{ route('medicalTest.active', ['id' => $medical_test->id]) }}" title="Active" onclick="return confirm('Are you sure you want to active this medical test?')">
-                                                        <button class="btn btn-outline-dark"> <i class="fa fa-share"> </i>Active</button>
+                                                        <button class=""> <i class="fa fa-share"> </i>Active</button>
                                                     </a>
                                                 </center>
                                             </td>

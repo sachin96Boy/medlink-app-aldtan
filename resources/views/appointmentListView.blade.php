@@ -18,7 +18,7 @@
                 <center>
                     <h5 >Appointment List</h5>
                 </center >
-                <div class="col-12 overflow-y-scroll" style="height: 50vh;">
+                <div class="col-12 overflow-y-scroll" style="height: 70vh;">
                     <div class="card-body">
                         <table id="example1" class="table table-bordered">
                             <thead style="position: sticky; top: 0; z-index: 1;">

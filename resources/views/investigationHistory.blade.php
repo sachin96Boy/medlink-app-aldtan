@@ -11,9 +11,9 @@
             <div class="row">
                 <div class="col-1">
                 </div>
-        <a href="{{ url()->previous() }}" <button
-                            style="margin-left: 2px; margin-bottom: 7px;border-radius: 30px; background-image: linear-gradient(to bottom, #7900ff, #2b8ffc);width:150px;"
-                            type="button" class="btn  btn-info btn-sm"><b> Back </b></button></a>
+                <a href="{{ url()->previous() }}" 
+                    style="margin-left: 2px; margin-bottom: 7px;border-radius: 30px; background-image: linear-gradient(to bottom, #7900ff, #2b8ffc);width:150px;"
+                    type="button" class="btn  btn-info btn-sm"><button><b> Back </b></button></a>
                 <center>
                     <h5>Investigation History</h5>
                 </center>
