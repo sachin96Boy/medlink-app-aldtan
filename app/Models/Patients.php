@@ -12,7 +12,7 @@ class Patients extends Model
 
     public function title(){
         return $this->belongsTo(Title::class,"title", 'id');
-        
+
     }
 }
 

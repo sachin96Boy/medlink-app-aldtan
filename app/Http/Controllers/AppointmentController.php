@@ -44,9 +44,10 @@ class AppointmentController extends Controller
             ]);
         }
     }
+
     public function handleAjaxRequest(Request $request)
     {
-
+        try {
         $comment = $request->input('comment');
         $investigation = $request->input('investigation');
         $treatment = $request->input('treatment');
@@ -56,7 +57,7 @@ class AppointmentController extends Controller
         $tableInvesti = json_decode($request->input('tableInvesti'), true);
 
         $id = $request->input('uid');
-        $patients =  Patients::with('titles')
+        $patients =  Patients::with('title')
             ->select('patients.*', 'titles.id as title')
             ->leftJoin('titles', 'patients.title', '=', 'titles.id')
             ->where('patients.id', '=', $id)
@@ -67,7 +68,12 @@ class AppointmentController extends Controller
             'patients' => $patients, 'tableData' => $tableData, 'tableoutData' => $tableoutData, 'tableMedical' => $tableMedical, 'tableInvesti' => $tableInvesti
         ]);
         return $pdf->stream();
+        }catch (Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+
     }
+
     public function history($id)
     {
         try {
