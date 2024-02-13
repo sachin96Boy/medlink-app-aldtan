@@ -14,6 +14,7 @@ use App\Models\Patients;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Exception;
+use PhpParser\Node\Stmt\TryCatch;
 
 class PatientController extends Controller
 {
@@ -106,6 +107,7 @@ class PatientController extends Controller
 
     public function genReport(Request $request)
     {
+        try {
         $selectedValues = $request->input('selectedRows');
         $id = $request->input('id');
         $patients =  Patients::with('title')->select('patients.*', 'titles.id as title')->leftJoin('titles', 'patients.title', '=', 'titles.id')->where('id', '=', $id)->get();
@@ -113,18 +115,26 @@ class PatientController extends Controller
 
         $pdf = Pdf::loadView('test', ['pageName' => $pageName, 'selectedValues' => $selectedValues, 'patients' => $patients]);
         return $pdf->stream();
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
     public function drugReport(Request $request)
     {
-        $id = $request->input('id');
-        $patients =  Patients::with('title')->select('patients.*', 'titles.id as title')->leftJoin('titles', 'patients.title', '=', 'titles.id')->where('id', '=', $id)->get();
+        try {
+            $id = $request->input('id');
+            $patients =  Patients::with('title')->select('patients.*', 'titles.id as title')->leftJoin('titles', 'patients.title', '=', 'titles.id')->where('id', '=', $id)->get();
 
-        $selectedRows = $request->input('selectedRows');
-        $pageName = $request->input('pageName');
+            $selectedRows = $request->input('selectedRows');
+            $pageName = $request->input('pageName');
 
-        $pdf = Pdf::loadView('drugreport', ['selectedRows' => $selectedRows, 'pageName' => $pageName, 'patients' => $patients]);
-        return $pdf->stream();
-    }
+            $pdf = Pdf::loadView('drugreport', ['selectedRows' => $selectedRows, 'pageName' => $pageName, 'patients' => $patients]);
+            return $pdf->stream();
+        }catch (Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+        }
+
 
 
     public function patient_list_view()
