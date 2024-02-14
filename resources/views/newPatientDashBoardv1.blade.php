@@ -910,8 +910,8 @@ $conn->close();
                                                         <textarea class="mx-1" value="" id="comment" name="comment" rows="10" cols="3"
                                                             style="line-height: 1.3; width: 90%; background-color: #EBEFF3; border: none;margin-top:1.5px;">
                                                                         @if ($investigationDel->isNotEmpty())
-{{ $investigationDel->last()->comment }}
-@endif
+                                                                        {{ $investigationDel->last()->comment }}
+                                                                        @endif
                                                 </textarea>
                                                     </div>
                                                 </div>
