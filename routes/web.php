@@ -1,7 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Artisan;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -131,6 +132,7 @@ Route::post('/out_report', [App\Http\Controllers\PatientController::class, 'out_
 Route::get('/profile', [App\Http\Controllers\HomeController::class,  'profile'])->name('profile');
 Route::post('/profile/update-picture', [App\Http\Controllers\HomeController::class,  'updateProfilePicture'])->name('updateProfilePicture');
 Route::post('/profile/updateUser', [App\Http\Controllers\HomeController::class,  'update'])->name('updateUser');
+Route::get('/barcode/{id}', [App\Http\Controllers\PatientController::class, 'barcode'])->name('barcode');
 
 
 
