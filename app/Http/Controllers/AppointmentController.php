@@ -46,7 +46,6 @@ class AppointmentController extends Controller
     }
     public function handleAjaxRequest(Request $request)
     {
-
         $comment = $request->input('comment');
         $investigation = $request->input('investigation');
         $treatment = $request->input('treatment');
@@ -56,7 +55,7 @@ class AppointmentController extends Controller
         $tableInvesti = json_decode($request->input('tableInvesti'), true);
 
         $id = $request->input('uid');
-        $patients =  Patients::with('titles')
+        $patients =  Patients::with('title')
             ->select('patients.*', 'titles.id as title')
             ->leftJoin('titles', 'patients.title', '=', 'titles.id')
             ->where('patients.id', '=', $id)
