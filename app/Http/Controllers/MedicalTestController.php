@@ -30,20 +30,16 @@ class MedicalTestController extends Controller
         return view('medicalTestAdd');
     }
 
-
     public function add(Request $request)
     {
-
         try {
             $data = [
                 'test_name' => $request->test_name
             ];
             MedicalTest::create($data);
-
             session()->flash('message', 'Successfully Added Medical Test !');
             return redirect()->back()->with('success', 'Successfully Added Medical Test !');
         } catch (Exception $e) {
-
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
@@ -52,9 +48,7 @@ class MedicalTestController extends Controller
     {
         try {
             $medical_test_list =  MedicalTest::all()->where('status','=','0');
-            
             $medical_test_list_deleted =  MedicalTest::all()->where('status','=','1');
-           
             return view('medicalTestList', ['medical_test_list' => $medical_test_list, 'medical_test_list_deleted' => $medical_test_list_deleted]);
         } catch (Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
@@ -63,32 +57,26 @@ class MedicalTestController extends Controller
 
     public function delete(Request $request)
     {
-
         try {
             $medical_test = medicaltest::find($request->id);
             $medical_test->status = '1';
-
             $medical_test->save();
             session()->flash('message', 'Successfully Deleted Medical Test  !');
             return redirect()->back()->with('success', 'Successfully Deleted Medical Test !');
         } catch (Exception $e) {
-
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
     public function active(Request $request)
     {
-
         try {
             $medical_test = medicaltest::find($request->id);
             $medical_test->status = '0';
-
             $medical_test->save();
             session()->flash('message', 'Successfully Actived Medical Test  !');
             return redirect()->back()->with('success', 'Successfully Actived Medical Test !');
         } catch (Exception $e) {
-
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
@@ -96,9 +84,7 @@ class MedicalTestController extends Controller
     public function medical_test_search(Request $request)
     {
         try {
-
             $medical_test_list = DB::table('medical_tests');
-
             if (isset($request->test_name)) {
                 $test_name = $request->test_name;
                 $medical_test_list = $medical_test_list->where("medical_tests.test_name", 'LIKE', '%' . $test_name . '%');
@@ -108,8 +94,6 @@ class MedicalTestController extends Controller
                 ->orderBy('medical_tests.test_name', 'asc')
                 ->where('medical_tests.status', '=', "0")
                 ->get();
-
-
             $medical_test_list_deleted =  DB::table('medical_tests')
                 ->select('medical_tests.*')
                 ->orderBy('medical_tests.test_name', 'asc')
@@ -124,10 +108,7 @@ class MedicalTestController extends Controller
     public function edit($id)
     {
         try {
-
             $medical_tests = medicalTests::all()->where('id', '=', $id);
-
-
             return view('medicalTestEdit', ['medical_tests' => $medical_tests]);
         } catch (Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
@@ -135,19 +116,15 @@ class MedicalTestController extends Controller
     }
 
     public function update(Request $request)
-
     {
-
         try {
             $medical_tests = medicaltest::find($request->id);
             $medical_tests->update([
                 'test_name' => $request->test_name,
             ]);
-
             session()->flash('message', 'Successfully Actived Medical Test  !');
             return redirect()->back()->with('success', 'Successfully Updated Medical Test !');
         } catch (Exception $e) {
-
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
