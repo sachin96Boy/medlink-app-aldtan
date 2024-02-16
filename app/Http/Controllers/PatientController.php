@@ -406,4 +406,10 @@ class PatientController extends Controller
             ]);
         }
     }
+    public function barcode($id)
+    {
+        $patients =  Patients::all()->where('id', '=', $id);
+        return view('barcode',['patients' => $patients]);
+   
+    }
 }

@@ -67,6 +67,9 @@
                         <a href="{{ route('appointment.history', $patient->id) }}" title="History">
                             <button class="btn btn-outline-info"> <i class="fa fa-book"> </i>History</button>
                         </a>
+                        <a href="{{ route('barcode', $patient->id) }}" title="History">
+                            <button class="btn btn-outline-info"> <i class="fa fa-book"> </i>Barcode</button>
+                        </a>
                     </center>
                 </td>
             </tr>
