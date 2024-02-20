@@ -99,7 +99,7 @@ class DrugsController extends Controller
 
             $drugs_list_deleted =  Drugs::all()->where('status', '=', '1')->sortBy('drug_name');
 
-            return view('drugsList',['drugs_list' => $drugs_list , 'drugs_list_deleted' => $drugs_list_deleted])->with('success', 'Successfully Deleted Drug !');
+            return view('drugsList', ['drugs_list' => $drugs_list, 'drugs_list_deleted' => $drugs_list_deleted])->with('success', 'Successfully Deleted Drug !');
         } catch (Exception $e) {
 
             return redirect()->back()->with('error', $e->getMessage());
@@ -121,7 +121,7 @@ class DrugsController extends Controller
             $drugs_list_deleted =  Drugs::all()->where('status', '=', '1')->sortBy('drug_name');
 
             session()->flash('message', 'Successfully Actived drug..!');
-            return view('drugsList',['drugs_list' => $drugs_list , 'drugs_list_deleted' => $drugs_list_deleted])->with('success', 'Successfully Actived drug..!');
+            return view('drugsList', ['drugs_list' => $drugs_list, 'drugs_list_deleted' => $drugs_list_deleted])->with('success', 'Successfully Actived drug..!');
         } catch (Exception $e) {
 
             return redirect()->back()->with('error', $e->getMessage());
@@ -131,8 +131,8 @@ class DrugsController extends Controller
     public function drug_search(Request $request)
     {
 
-            // go through search parts so that
-            // it ill use models
+        // go through search parts so that
+        // it ill use models
         try {
 
             $validate = $request->validate([
@@ -142,17 +142,17 @@ class DrugsController extends Controller
 
             if (isset($request->drug_name)) {
                 $drug_name = $request->drug_name;
-                $drugs_list = Drugs::all()->where("drug_name", 'LIKE', '%' . $drug_name . '%');
+                $drugs_list = Drugs::all()->where('drug_name', 'LIKE', '%' . $drug_name . '%');
             }
             $drugs_list = $drugs_list->where("status", "=", "0")
-                ->sortBy('drug_name')
-                ->where('status', '=', "0");
-                -
+                ->sortBy('drug_name');
+
 
             $drugs_list_deleted =  Drugs::all()
-                ->sortBy('drug_name')
-                ->where('status', '=', "1");
-                
+                ->where('status', '=', "1")
+                ->sortBy('drug_name');
+
+
             return view('drugsList', ['drugs_list' => $drugs_list, 'drugs_list_deleted' => $drugs_list_deleted]);
         } catch (Exception $e) {
             return response()->json([
