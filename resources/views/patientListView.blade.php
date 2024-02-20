@@ -47,7 +47,7 @@
                         </div>
                     </div>
                 </form>
-                <div class="col-12 overflow-scroll" style="height: 50vh; background-color:#d1dfec;">
+                <div class="col-12 overflow-scroll my-2" style="height: 65vh; background-color:#d1dfec;">
                     <div class="card-body">
                         @include('patientList')
                     </div>

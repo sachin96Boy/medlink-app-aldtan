@@ -71,8 +71,8 @@ class DiagnosticCategoriesController extends Controller
             $diagnosticCategory = diagnosticCategory::find($request->id);
             $diagnosticCategory->status = '1';
 
-            session()->flash('message', 'Successfully Deleted diagnostic Category !');
             $diagnosticCategory->save();
+            session()->flash('message', 'Successfully Deleted diagnostic Category !');
             return redirect()->back()->with('success', 'Successfully Deleted diagnostic Category !');
         } catch (Exception $e) {
 
@@ -87,8 +87,8 @@ class DiagnosticCategoriesController extends Controller
             $diagnosticCategory->status = '0';
 
 
-            session()->flash('message', 'Successfully Actived diagnostic Category !');
             $diagnosticCategory->save();
+            session()->flash('message', 'Successfully Actived diagnostic Category !');
             return redirect()->back()->with('success', 'Successfully Actived diagnostic Category !');
         } catch (Exception $e) {
 
@@ -108,19 +108,17 @@ class DiagnosticCategoriesController extends Controller
 
             if (isset($request->cat_name)) {
                 $cat_name = $request->cat_name;
-                $diagnosticcategories_list = $diagnosticcategories_list->where("diagnostic_categories.category_name", 'LIKE', '%' . $cat_name . '%');
+                $diagnosticcategories_list = DiagnosticCategory::all()->where("category_name", 'LIKE', '%' . $cat_name . '%');
             }
-            $diagnosticcategories_list = $diagnosticcategories_list->where("diagnostic_categories.status", "=", "0")
-                ->select('diagnostic_categories.*')
-                ->orderBy('diagnostic_categories.category_name', 'asc')
-                ->where('diagnostic_categories.status', '=', "0")
-                ->get();
+            $diagnosticcategories_list = $diagnosticcategories_list->where("status", "=", "0")
+                ->sortBy('category_name')
+                ->where('status', '=', "0");
 
-            $diagnosticcategories_deleted_list =  DB::table('diagnostic_categories')
-                ->select('diagnostic_categories.*')
-                ->orderBy('diagnostic_categories.category_name', 'asc')
-                ->where('diagnostic_categories.status', '=', "1")
-                ->get();
+
+            $diagnosticcategories_deleted_list =  DiagnosticCategory::all()
+                ->sortBy('category_name')
+                ->where('status', '=', "1");
+
             return view('diagnosticCategoriesListView', ['diagnosticcategories_list' => $diagnosticcategories_list, 'diagnosticcategories_deleted_list' => $diagnosticcategories_deleted_list]);
         } catch (Exception $e) {
             return response()->json([

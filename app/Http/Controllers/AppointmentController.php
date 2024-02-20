@@ -8,6 +8,7 @@ use App\Models\Patients;
 use App\Models\Appoinment;
 use App\Models\Patient;
 use App\Models\InvestigationDetails;
+use App\Models\reccomandedOpdDrugs;
 // use PDF;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
@@ -119,7 +120,16 @@ class AppointmentController extends Controller
 
             Appoinment::create($data);
             session()->flash('message', 'Appointment Successfully Saved ..!');
-            return redirect()->back()->with('success', 'Appointment Successfully Saved ..!');
+
+            // return back with family data
+
+            $famname = Patients::all('family_name')->groupBy('family_name');
+
+            $appoinment_list = Appoinment::all()->where('date', '=', $currentDate);
+
+            $patient_list = Patients::with('title')->join('titles', 'titles.id', '=', 'patients.title')->select('patients.*', 'titles.title as title')->where('patients.status', '=', '0')->get();
+
+            return view('patientListView', ['famname' => $famname, 'patient_list' => $patient_list, 'appoinment_list' => $appoinment_list]) > with('success', 'Appointment Successfully Saved ..!');
         } catch (Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }
@@ -132,7 +142,7 @@ class AppointmentController extends Controller
 
             $currentDate = Carbon::today();
 
-            $waiting_list =  Appoinment::with('patients')-> select('appoinments.*', 'patients.name as patientname')->leftjoin('patients', 'appoinments.patient_id', '=', 'patients.id')
+            $waiting_list =  Appoinment::with('patients')->select('appoinments.*', 'patients.name as patientname')->leftjoin('patients', 'appoinments.patient_id', '=', 'patients.id')
                 ->where('appoinments.status', '=', "0")
                 ->where('appoinments.date', '=', $currentDate)
                 ->where('patients.status', '=', '0')
@@ -156,7 +166,7 @@ class AppointmentController extends Controller
 
 
             // Redirect back to the previous page
-            return back();
+            return redirect()->back()->with('success', 'appoinment canceled successfully');
         } catch (Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }
@@ -197,37 +207,57 @@ class AppointmentController extends Controller
 
 
             $date =  Appoinment::all()
-                ->where('appoinments.patient_id', '=', $request->patient_id)
-                ->where('appoinments.date', '=', $currentDate)->first();
+                ->where('patient_id', '=', $request->patient_id)
+                ->where('date', '=', $currentDate)->first();
             $channel_date = $date->date;
-            $data = [
-                'patient_id' => $request->patient_id,
-                'treatment' => $request->treatment,
-                'next_visit_date' => $nextVisitDate,
-                'amount' => $request->amount,
-                'comment' => $request->comment,
-                'investigation_details' => $request->investigation_details,
-                'channel_date' => $channel_date,
-            ];
 
-            InvestigationDetails::create($data);
+            // check if entry is already there
+            $existingEntry = InvestigationDetails::all()->where('patient_id', '=', $request->patient_id)->where('channel_date', '=', $channel_date)->first();
+
+            if (!$existingEntry) {
+
+                $data = [
+                    // need to know where to get investigation_id?
+                    'patient_id' => $request->patient_id,
+                    'treatment' => $request->treatment,
+                    'next_visit_date' => $nextVisitDate,
+                    'amount' => $request->amount,
+                    'comment' => $request->comment,
+                    'investigation_details' => $request->investigation_details,
+                    'channel_date' => $channel_date,
+                ];
+
+                InvestigationDetails::create($data);
+            }
 
 
             $opdDrugs = $request->input('opdid');
             $doses = $request->input('opddose');
             $periods = $request->input('opdperiod');
-            //dd($opdDrugs, $doses, $periods);
+            $terms = $request->input('termsOPD');
+
             // Loop through the data and save to the database using the Query Builder
             if (!is_null($opdDrugs) && (is_array($opdDrugs) || is_object($opdDrugs))) {
                 foreach ($opdDrugs as $key => $opdDrug) {
-                    DB::table('reccomanded_opd_drugs')->insert([
-                        'appointment_date' => $currentDate,
-                        'patient_id' => $request->patient_id,
-                        'drug' => $opdDrug,
-                        'dose' => $doses[$key],
-                        'period' => $periods[$key],
-                        // Add other fields as needed
-                    ]);
+                    // Check if the drug entry already exists for the same patient and date
+                    $existingEntry = DB::table('reccomanded_opd_drugs')
+                        ->where('patient_id', $request->patient_id)
+                        ->where('appointment_date', $currentDate)
+                        ->where('drug', $opdDrug)
+                        ->first();
+
+                    if (!$existingEntry) {
+
+                        DB::table('reccomanded_opd_drugs')->insert([
+                            'appointment_date' => $currentDate,
+                            'patient_id' => $request->patient_id,
+                            'drug' => $opdDrug,
+                            'dose' => $doses[$key],
+                            'period' => $periods[$key],
+                            'terms' => $terms[$key]
+                            // Add other fields as needed
+                        ]);
+                    }
                 }
             }
 
@@ -235,19 +265,30 @@ class AppointmentController extends Controller
             $outsideDrugs = $request->input('outsideid');
             $outsidedose = $request->input('outsidedose');
             $outsideperiod = $request->input('outsideperiod');
-            //dd($outsideDrugs, $doses, $periods);
+            $outterms = $request->input('outterms');
+
             // Loop through the data and save to the database using the Query Builder
 
             if (!is_null($outsideDrugs) && (is_array($outsideDrugs) || is_object($outsideDrugs))) {
                 foreach ($outsideDrugs as $key => $outDrug) {
-                    DB::table('reccomanded_outside_drugs')->insert([
-                        'appointment_date' => $currentDate,
-                        'patient_id' => $request->patient_id,
-                        'drug' => $outDrug,
-                        'dose' => $outsidedose[$key],
-                        'period' => $outsideperiod[$key],
-                        // Add other fields as needed
-                    ]);
+                    // Check if the drug entry already exists for the same patient and date
+                    $existingEntry = DB::table('reccomanded_outside_drugs')
+                        ->where('patient_id', $request->patient_id)
+                        ->where('appointment_date', $currentDate)
+                        ->where('drug', $outDrug)
+                        ->first();
+                    if (!$existingEntry) {
+
+                        DB::table('reccomanded_outside_drugs')->insert([
+                            'appointment_date' => $currentDate,
+                            'patient_id' => $request->patient_id,
+                            'drug' => $outDrug,
+                            'dose' => $outsidedose[$key],
+                            'period' => $outsideperiod[$key],
+                            'terms' => $outterms[$key],
+                            // Add other fields as needed
+                        ]);
+                    }
                 }
             }
 
@@ -259,12 +300,20 @@ class AppointmentController extends Controller
             if (!is_null($investi) && (is_array($investi) || is_object($investi))) {
                 // Loop through the data and save to the database using the Query Builder
                 foreach ($investi as $key => $inves) {
-                    DB::table('investigation_history')->insert([
-                        'investtigation' => $inves,
-                        'patient_id' => $request->patient_id,
-                        'appointment_date' => $currentDate,
+                    // Check if the investigation entry already exists for the same patient and date
+                    $existingEntry = DB::table('investigation_history')
+                        ->where('patient_id', $request->patient_id)
+                        ->where('appointment_date', $currentDate)
+                        ->where('investtigation', $inves)
+                        ->first();
+                    if (!$existingEntry) {
 
-                    ]);
+                        DB::table('investigation_history')->insert([
+                            'investtigation' => $inves,
+                            'patient_id' => $request->patient_id,
+                            'appointment_date' => $currentDate,
+                        ]);
+                    }
                 }
             }
 
@@ -273,12 +322,21 @@ class AppointmentController extends Controller
             if (!is_null($meditest) && (is_array($meditest) || is_object($meditest))) {
                 // Loop through the data and save to the database using the Query Builder
                 foreach ($meditest as $key => $medtest) {
-                    DB::table('medical_test')->insert([
-                        'medical_test' => $medtest,
-                        'patient_id' => $request->patient_id,
-                        'appointment_date' => $currentDate,
-                        // Add other fields as needed
-                    ]);
+                    // Check if the medical test entry already exists for the same patient and date
+                    $existingEntry = DB::table('medical_test')
+                        ->where('patient_id', $request->patient_id)
+                        ->where('appointment_date', $currentDate)
+                        ->where('medical_test', $medtest)
+                        ->first();
+                    if (!$existingEntry) {
+
+                        DB::table('medical_test')->insert([
+                            'medical_test' => $medtest,
+                            'patient_id' => $request->patient_id,
+                            'appointment_date' => $currentDate,
+                            // Add other fields as needed
+                        ]);
+                    }
                 }
             }
 
@@ -294,16 +352,25 @@ class AppointmentController extends Controller
 
 
             $appoinments =  Appoinment::with('patients')
-                ->select('appoinments.*', DB::raw('patients.name as patientname'), DB::raw('patients.id as patientid'))
-                ->leftjoin('patients', 'appoinments.patient_id', '=', 'patients.id')
+                ->select('appoinments.*', 'patients.name as patientname', 'patients.id as patientid')
+                ->leftJoin('patients', 'appoinments.patient_id', '=', 'patients.id')
                 ->where('appoinments.status', '=', '0')
                 ->where('appoinments.date', '=', $currentDate)
                 ->get();
 
+            $id = $request->input('patient_id');
+
+            $drug_history = reccomandedOpdDrugs::all(['drug', 'dose', 'period', 'terms'])->where('appoinment_date', '=', $currentDate)->where('patient_id', '=', $id);
+
+            $patients = Patients::all()->where('id', '=', $id);
+
+            $amount = $request->amount;
+
+            $appId = Appoinment::all()->where('patient_id', '=', $request->patient_id)->where('date', '=', $currentDate);
+
             session()->flash('message', 'Appointment Finished Successfully Updated ..!');
 
-            return view('newDoctorScreen', ['appoinments' => $appoinments])
-                ->with('success', 'Appointment Finished Successfully Updated ..!');
+            return view('opd_report',  ['opdReport' => $drug_history, 'patients' => $patients, 'amount' => $amount, 'appoi' => $appId])->with('success', 'Appointment Finished Successfully Updated ..!');
         } catch (Exception $e) {
 
             return redirect()->back()->with('error', $e->getMessage());

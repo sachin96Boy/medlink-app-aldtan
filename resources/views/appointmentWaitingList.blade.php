@@ -15,7 +15,7 @@
                         type="button" class="btn  btn-info btn-sm"><b>Home</b></button></a>
                         
 
-                <div class="col-12 overflow-y-scroll" style="height: 50vh;">
+                <div class="col-12 overflow-y-scroll" style="height: 70vh;">
                     <div class="card-body">
                         <table id="example1" class="table table-bordered">
                             <thead>
@@ -31,11 +31,11 @@
                                         <td>{{ $waiting->appointment_no }}</td>
                                         <td>{{ $waiting->patientname }}</td>
                                         <td><a href="{{ route('view_patient_details', $waiting->patient_id) }}">
-                                                <button type="button" class="btn btn-secondary"
+                                                <button type="button" class="mr-5"
                                                     style="border-radius: 10px; background-image: linear-gradient(to bottom, #4fdcd7, #52f3bc);border:none;box-shadow: 1px 5px 1px rgba(0, 0, 0, 0.1);">Enter</button>
                                             </a>
                                             <a href="{{ route('view_patient_cancel', $waiting->appointment_no) }}">
-                                                <button type="button" class="btn btn-secondary"
+                                                <button type="button" class=""
                                                     style="border-radius: 10px; background-image: linear-gradient(to bottom, #4fdcd7, #52f3bc);border:none;box-shadow: 1px 5px 1px rgba(0, 0, 0, 0.1);">Cancel</button>
                                             </a>
                                         </td>
