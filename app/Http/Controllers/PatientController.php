@@ -115,7 +115,7 @@ class PatientController extends Controller
             $current = Carbon::today();
             $famname =  Patients::all('family_name')->groupBy('family_name');
             $apoinment_list = Appoinment::all()->where('date', '=', $current)->where('active', '=', '0');
-            $patient_list = Patients::with('title')->select('patients.*', 'titles.title as title')->join('titles', 'titles.id', '=', 'patients.title')->where('status', '=', '0')->get();
+            $patient_list = Patients::with('title')->select('patients.*', 'titles.title as title')->join('titles', 'titles.id', '=', 'patients.title')->where('patients.status', '=', '0')->get();
             return view('patientListView', ['famname' => $famname, 'patient_list' => $patient_list, 'appoinment_list' => $apoinment_list]);
         } catch (Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
@@ -124,34 +124,42 @@ class PatientController extends Controller
 
     public function patient_list_search(Request $request)
     {
-    try {
-        $validate = $request->validate([
-            'keyword' => 'required',
-        ]);
-        $famname =  Patients::all('family_name')
-            ->groupBy('family_name');
-        $patient_list = Patients::with('title')
-            ->join('titles', 'patients.title', '=', 'titles.id')
-            ->where('patients.status', '=', '0');
-        if (isset($request->keyword)) {
-            $keyword = $request->keyword;
-            $patient_list->where(function($query) use ($keyword) {
-                $query->orWhere("patients.nic", 'LIKE', '%' . $keyword . '%')
-                    ->orWhere("patients.family_name", 'LIKE', '%' . $keyword . '%')
-                    ->orWhere("patients.name", 'LIKE', '%' . $keyword . '%')
-                    ->orWhere("patients.mobile", 'LIKE', '%' . $keyword . '%')
-                    ->orWhere("patients.address", 'LIKE', '%' . $keyword . '%');
-            });
-        }
+        try {
+            $validate = $request->validate([
+                'keyword' => 'required',
+            ]);
 
-        $patient_list = $patient_list
-            ->select('patients.*', 'titles.title as title')
-            ->get();
-        return view('patientListView', ['famname' => $famname, 'patient_list' => $patient_list]);
-    } catch (Exception $e) {
-        return redirect()->back()->with('error', $e->getMessage());
+            $current = Carbon::today();
+
+            $apoinment_list = Appoinment::all()
+                ->where('date', '=', $current)
+                ->where('active', '=', '0');
+                
+
+            $famname =  Patients::all('family_name')
+                ->groupBy('family_name');
+            $patient_list = Patients::with('title')
+                ->join('titles', 'patients.title', '=', 'titles.id')
+                ->where('patients.status', '=', '0');
+            if (isset($request->keyword)) {
+                $keyword = $request->keyword;
+                $patient_list->where(function ($query) use ($keyword) {
+                    $query->orWhere("patients.nic", 'LIKE', '%' . $keyword . '%')
+                        ->orWhere("patients.family_name", 'LIKE', '%' . $keyword . '%')
+                        ->orWhere("patients.name", 'LIKE', '%' . $keyword . '%')
+                        ->orWhere("patients.mobile", 'LIKE', '%' . $keyword . '%')
+                        ->orWhere("patients.address", 'LIKE', '%' . $keyword . '%');
+                });
+            }
+
+            $patient_list = $patient_list
+                ->select('patients.*', 'titles.title as title')
+                ->get();
+            return view('patientListView', ['famname' => $famname, 'patient_list' => $patient_list, 'appoinment_list' => $apoinment_list]);
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
-}
 
     public function edit_view($id)
     {
@@ -345,6 +353,6 @@ class PatientController extends Controller
     public function barcode($id)
     {
         $patients =  Patients::all()->where('id', '=', $id);
-        return view('barcode',['patients' => $patients]);
+        return view('barcode', ['patients' => $patients]);
     }
 }
