@@ -47,8 +47,8 @@ class MedicalTestController extends Controller
     public function  medical_test_list()
     {
         try {
-            $medical_test_list =  MedicalTest::all()->where('status','=','0');
-            $medical_test_list_deleted =  MedicalTest::all()->where('status','=','1');
+            $medical_test_list =  MedicalTest::all()->where('status', '=', '0');
+            $medical_test_list_deleted =  MedicalTest::all()->where('status', '=', '1');
             return view('medicalTestList', ['medical_test_list' => $medical_test_list, 'medical_test_list_deleted' => $medical_test_list_deleted]);
         } catch (Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
@@ -83,6 +83,8 @@ class MedicalTestController extends Controller
 
     public function medical_test_search(Request $request)
     {
+        // update this so that it 'll use models insted of
+        // db query
         try {
             $medical_test_list = DB::table('medical_tests');
             if (isset($request->test_name)) {
