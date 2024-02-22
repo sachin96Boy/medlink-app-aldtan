@@ -43,6 +43,7 @@ class DrugsController extends Controller
                 return redirect()->back()->with('error', 'something error');
             }
             $drugName = $request->input('drug_name');
+            // check if there's an existing drug name record available
             $drugId = Drugs::where('drug_name', $drugName)->count();
             if ($drugId > 0) {
                 return redirect()->back()->with('error', 'This Drug Name already available');
@@ -75,6 +76,12 @@ class DrugsController extends Controller
     public function delete(Request $request)
     {
         try {
+
+            // code on server returns 'drug_list' view for both the scnes 
+            // chheck if this already works
+            // or we need to modify this
+            // update: no  need! this already works
+
             $drug = drugs::find($request->id);
             $drug->status = '1';
             $drug->save();
@@ -102,6 +109,7 @@ class DrugsController extends Controller
 
     public function drug_search(Request $request)
     {
+        // update drug search to use models insted of db query builder alone
         try {
             $validate = $request->validate([
                 'drug_name' => 'required',

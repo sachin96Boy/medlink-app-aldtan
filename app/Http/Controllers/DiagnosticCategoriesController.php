@@ -85,6 +85,7 @@ class DiagnosticCategoriesController extends Controller
 
     public function diagnostic_categorie_search(Request $request)
     {
+        // try using model
         try {
             $validate = $request->validate([
                 'cat_name' => 'required',
