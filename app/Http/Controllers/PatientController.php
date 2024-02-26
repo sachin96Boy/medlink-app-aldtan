@@ -134,7 +134,7 @@ class PatientController extends Controller
             $apoinment_list = Appoinment::all()
                 ->where('date', '=', $current)
                 ->where('active', '=', '0');
-                
+
 
             $famname =  Patients::all('family_name')
                 ->groupBy('family_name');
@@ -348,6 +348,21 @@ class PatientController extends Controller
                 'error' => $e->getMessage(),
             ]);
         }
+    }
+
+    public function out_report(Request $request)
+    {
+
+        $tableoutData = json_decode($request->input('tableOutData'), true);
+
+        $id = $request->input('uid');
+        $patients =  Patients::with('titles')
+            ->select('patients.*', 'titles.id as title')
+            ->leftjoin('titles', 'patients.title', '=', 'titles.id')
+            ->where('patients.id', '=', $id)
+            ->get();
+        $pdf = Pdf::loadView('out_report', ['outReport' => $tableoutData, 'patients' => $patients]);
+        return $pdf->stream();
     }
 
     public function barcode($id)
